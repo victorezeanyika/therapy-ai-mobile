@@ -1,65 +1,117 @@
-import { View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import CustomFormField from './CustomFormField';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { router } from 'expo-router';
+import { useLoginMutation } from '@/features/auth-api';
+// import { useLoginMutation } from '@/store/api/authApi';
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [login, {isLoading}] = useLoginMutation();
+
+  const userLoginSchema = z.object({
+    email: z.string().email({ message: 'Invalid email address' }),
+    password: z.string().min(8, { message: 'Password must be at least 8 characters.' }),
+  });
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<z.infer<typeof userLoginSchema>>({
+    resolver: zodResolver(userLoginSchema),
+  });
+
+  const onSubmit = async (data: z.infer<typeof userLoginSchema>) => {
+    try {
+      const result = await login(data).unwrap();
+      Alert.alert('Success', 'Login successful');
+      router.push({ pathname: '/(auth)/verify-otp', params: { email: data.email } });
+    } catch (error: any) {
+      Alert.alert(
+        error?.data?.message ||
+          error?.data?.error ||
+          error?.message ||
+          'An error occurred'
+      );
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          placeholderTextColor="#666"
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <View style={styles.passwordContainer}>
-          <TextInput
-            style={[styles.input, styles.passwordInput]}
-            placeholder="Password"
-            placeholderTextColor="#666"
-            secureTextEntry={!showPassword}
-          />
-          <TouchableOpacity 
-            style={styles.eyeIcon}
-            onPress={() => setShowPassword(!showPassword)}
-          >
-            <Ionicons 
-              name={showPassword ? "eye-off" : "eye"} 
-              size={24} 
-              color="#666" 
+      <CustomFormField
+        name="email"
+        label="Email"
+        placeholder="Enter your Passpadi Email"
+        control={control}
+        errors={errors.email}
+        fieldType="input"
+        icon="user"
+      />
+
+      <CustomFormField
+        name="password"
+        label="Password"
+        placeholder="Enter your Password"
+        control={control}
+        errors={errors.password}
+        fieldType="input"
+        icon="lock"
+        rightIcon={
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Ionicons
+              name={showPassword ? 'eye-off' : 'eye'}
+              size={20}
+              color="#666"
             />
           </TouchableOpacity>
-        </View>
-      </View>
+        }
+      />
 
       <View style={styles.optionsContainer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.rememberMe}
           onPress={() => setRememberMe(!rememberMe)}
         >
           <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
-            {rememberMe && <Ionicons name="checkmark" size={16} color="#fff" />}
+            {rememberMe && (
+              <Ionicons name="checkmark" size={16} color="#fff" />
+            )}
           </View>
-          <ThemedText type='subtitle' style={styles.rememberMeText}>Remember me</ThemedText>
+          <ThemedText type="subtitle" style={styles.rememberMeText}>
+            Remember me
+          </ThemedText>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <ThemedText type='subtitle' style={styles.forgotPasswordText}>Forgot Password?</ThemedText>
+
+        <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password')}>
+          <ThemedText type="subtitle" style={styles.forgotPasswordText}>
+            Forgot Password?
+          </ThemedText>
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.button}>
-        <ThemedText style={styles.buttonText}>Login</ThemedText>
+      <TouchableOpacity
+        style={[styles.button, isLoading && { opacity: 0.5 }]}
+        onPress={handleSubmit(onSubmit)}
+        disabled={isLoading}
+      >
+        <ThemedText style={styles.buttonText}>
+          {isLoading ? 'Logging in...' : 'Login'}
+        </ThemedText>
       </TouchableOpacity>
 
       <View style={styles.dividerContainer}>
         <View style={styles.divider} />
-        <ThemedText type='subtitle' style={styles.dividerText}>or login with</ThemedText>
+        <ThemedText type="subtitle" style={styles.dividerText}>
+          or login with
+        </ThemedText>
         <View style={styles.divider} />
       </View>
 
@@ -73,9 +125,13 @@ export default function LoginForm() {
       </View>
 
       <View style={styles.signupContainer}>
-        <ThemedText type='subtitle' style={styles.signupText}>Don't have an account? </ThemedText>
-        <TouchableOpacity>
-          <ThemedText type='subtitle' style={styles.signupLink}>Sign up</ThemedText>
+        <ThemedText type="subtitle" style={styles.signupText}>
+          Don't have an account?{' '}
+        </ThemedText>
+        <TouchableOpacity onPress={() => router.push('/(auth)/sign-up')}>
+          <ThemedText type="subtitle" style={styles.signupLink}>
+            Sign up
+          </ThemedText>
         </TouchableOpacity>
       </View>
     </View>
@@ -86,29 +142,6 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     paddingHorizontal: 20,
-    marginTop: 30,
-  },
-  inputContainer: {
-    gap: 15,
-  },
-  input: {
-    height: 50,
-    backgroundColor: '#fff',
-    borderRadius: 50,
-    paddingHorizontal: 20,
-    fontSize: 16,
-    color: '#333',
-  },
-  passwordContainer: {
-    position: 'relative',
-  },
-  passwordInput: {
-    paddingRight: 50,
-  },
-  eyeIcon: {
-    position: 'absolute',
-    right: 15,
-    top: 13,
   },
   optionsContainer: {
     flexDirection: 'row',
@@ -175,15 +208,11 @@ const styles = StyleSheet.create({
   },
   socialButton: {
     alignItems: 'center',
-    justifyContent:'center',
+    justifyContent: 'center',
     backgroundColor: '#fff',
     borderRadius: 5,
-    width:40,
-    height:40,
-  },
-  socialButtonText: {
-    color: '#666',
-    fontSize: 14,
+    width: 40,
+    height: 40,
   },
   signupContainer: {
     flexDirection: 'row',
@@ -197,7 +226,7 @@ const styles = StyleSheet.create({
   signupLink: {
     color: Colors.harmony.primary,
     fontSize: 15,
-    fontWeight: 700,
-    fontFamily:'Gotham-Bold'
+    fontWeight: '700',
+    fontFamily: 'Gotham-Bold',
   },
-}); 
+});

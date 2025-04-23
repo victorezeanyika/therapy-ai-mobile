@@ -27,26 +27,26 @@ const { width } = Dimensions.get('window');
 const onboardingData = [
   {
     id: '1',
-    title: 'Welcome to Therapy AI',
-    description: 'Your personal mental health companion, available 24/7 to support your journey to better mental well-being.',
+    titleParts: ['Personalize Your ', 'Mental Health State', ' With AI'],
+    highlightIndex: 1,
     image: require('../../assets/images/onboard-1.png'),
   },
   {
     id: '2',
-    title: 'Personalized Support',
-    description: 'Get tailored guidance and support based on your unique needs and preferences.',
+    titleParts: ['', 'Intelligent', ' Mood Tracking & AI Emotion Insights'],
+    highlightIndex: 1,
     image: require('../../assets/images/onboard-2.png'),
   },
   {
     id: '3',
-    title: 'Track Your Progress',
-    description: 'Monitor your mental health journey with detailed insights and progress tracking.',
+    titleParts: ['AI ', 'Mental', ' Journaling & AI Therapy Chatbot'],
+    highlightIndex: 1,
     image: require('../../assets/images/onboard-3.png'),
   },
   {
     id: '4',
-    title: 'Start Your Journey',
-    description: 'Begin your path to better mental health with our comprehensive support system.',
+    titleParts: ['Mindful ', 'Resources', ' That Makes You Happy'],
+    highlightIndex: 1,
     image: require('../../assets/images/onboard-4.png'),
   },
 ];
@@ -73,14 +73,14 @@ export default function OnboardingScreen() {
     if (currentIndex < onboardingData.length - 1) {
       slidesRef.current?.scrollToIndex({ index: currentIndex + 1 });
     } else {
-      router.replace('/(tabs)');
+      router.replace('/(auth)');
     }
   };
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemedView
-        lightColor={Colors.harmony.primary}
+        lightColor='#fff'
         darkColor={Colors.harmony.primarydark}
         style={styles.container}
       >
@@ -100,13 +100,24 @@ export default function OnboardingScreen() {
             ref={slidesRef}
           />
         </View>
-        {/* <Pagination data={onboardingData} scrollX={scrollX} />
+        <View style={{
+            position:'absolute',
+            bottom:250,
+          }}>
+      <Pagination data={onboardingData} scrollX={scrollX} />
+        </View>
+
+          <View style={{
+            position:'absolute',
+            bottom:30,
+          }}>
         <CustomButton
           onPress={scrollTo}
           style={{
-          width:80,
-          height:80,
-        }} /> */}
+            width:80,
+            height:80,
+          }} />
+          </View>
       </ThemedView>
     </GestureHandlerRootView>
   );
@@ -119,7 +130,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   slidesContainer: {
-    flex: 3,
+    // flex: 3,
     width: '100%',
   },
   button: {

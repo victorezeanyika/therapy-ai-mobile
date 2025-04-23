@@ -65,19 +65,14 @@ export default function Auth() {
               <ThemedText type="title">
                 Get Started Now
               </ThemedText>
-              <ThemedText type="subtitle" style={styles.subtitle}>
+              <ThemedText style={styles.subtitle}>
                 Create an account or log in to explore about our app
               </ThemedText>
 
-              <View style={styles.tabContainer}>
-                <TouchableOpacity
-                  style={[styles.tab, activeTab === 'login' && styles.activeTab]}
-                  onPress={() => handleTabPress('login')}
-                >
-                  <ThemedText style={[styles.tabText, activeTab === 'login' && styles.activeTabText]}>
-                    Login
-                  </ThemedText>
-                </TouchableOpacity>
+              <ThemedView 
+              lightColor="#FFFFFF"
+              darkColor="#232627"
+              style={styles.tabContainer}>
                 <TouchableOpacity
                   style={[styles.tab, activeTab === 'signup' && styles.activeTab]}
                   onPress={() => handleTabPress('signup')}
@@ -86,7 +81,16 @@ export default function Auth() {
                     Sign Up
                   </ThemedText>
                 </TouchableOpacity>
-              </View>
+                <TouchableOpacity
+                  style={[styles.tab, activeTab === 'login' && styles.activeTab]}
+                  onPress={() => handleTabPress('login')}
+                >
+                  <ThemedText style={[styles.tabText, activeTab === 'login' && styles.activeTabText]}>
+                    Login
+                  </ThemedText>
+                </TouchableOpacity>
+                
+              </ThemedView>
 
               <Animated.ScrollView
                 ref={scrollViewRef}
@@ -132,23 +136,33 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 50,
+    marginTop:20,
   },
   subtitle: {
     textAlign: 'center',
     maxWidth: 222,
+    fontSize:12,
+    lineHeight:20,
+    fontFamily:'Gotham-Book',
     marginTop: 12,
   },
   tabContainer: {
+    display:'flex',
     flexDirection: 'row',
+    borderRadius:7,
+    // borderWidth:1,
     marginTop: 30,
     marginBottom: 20,
+    width:327,
+    height:36,
   },
   tab: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    marginHorizontal: 10,
-    borderRadius: 20,
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center',
+    margin:2,
+    borderRadius: 7,
+    width:161,
   },
   activeTab: {
     backgroundColor: 'rgba(42, 157, 143, 0.1)',
@@ -156,6 +170,7 @@ const styles = StyleSheet.create({
   tabText: {
     fontSize: 16,
     color: '#666',
+    fontFamily:'Gotham-Book'
   },
   activeTabText: {
     color: '#2A9D8F',

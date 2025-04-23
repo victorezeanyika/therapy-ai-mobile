@@ -69,7 +69,7 @@ const CustomButton: React.FC<Props> = ({
             justifyContent: 'center',
             alignItems: 'center',
             opacity: disabled ? 0.5 : 1,
-            width: 189,
+            width: 209,
             paddingHorizontal: 20,
             flexDirection: 'row',
           },

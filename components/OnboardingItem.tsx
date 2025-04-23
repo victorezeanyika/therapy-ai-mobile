@@ -1,13 +1,16 @@
-import { View, StyleSheet, Dimensions, Text } from 'react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import { View, StyleSheet, Dimensions, Text, Image } from 'react-native';
 import { ImageBackground } from 'expo-image';
+import { Colors } from '@/constants/Colors';
 
 const { width } = Dimensions.get('window');
+
+
 
 interface OnboardingItemProps {
   item: {
     id: string;
-    title: string;
+    titleParts: string[];
+    highlightIndex: number;
     description: string;
     image: any;
   };
@@ -15,35 +18,40 @@ interface OnboardingItemProps {
 
 export default function OnboardingItem({ item }: OnboardingItemProps) {
   return (
-    <Animated.View
-      entering={FadeInDown.duration(1000).springify()}
+    <View
       style={[styles.container, { width }]}
     >
       {/* Top main image */}
       <View style={styles.imageContainer}>
-        <ImageBackground
+        <Image
           source={item.image}
           style={styles.image}
-          contentFit="cover"
-          transition={1000}
         />
       </View>
 
       {/* Background image for text */}
-      <Image
+      <ImageBackground
         source={require('@/assets/images/arc.png')}
         style={styles.textBackground}
-        contentFit="cover"
-        transition={1000}
+        contentFit='fill'
+        // transition={1000}
       >
-        <View style={styles.textContainer}>
-          <Text style={styles.title}>{item.title}</Text>
-          {/* <Text style={styles.description}>{item.description}</Text> */}
-        </View>
-      </Image>
-    </Animated.View>
+        <Text style={styles.title}>
+          {item.titleParts.map((part, index) => (
+            <Text
+              key={index}
+              style={index === item.highlightIndex ? { color: Colors.harmony.primary } : {}}
+            >
+              {part}
+            </Text>
+          ))}
+        </Text>
+        <Text style={styles.description}>{item.description}</Text>
+      </ImageBackground>
+    </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -52,9 +60,11 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: '100%',
-    padding: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginTop:80,
+    marginBottom:-80,
+    // padding: 10,
+    // justifyContent: 'center',
+    // alignItems: 'center',
   },
   image: {
     width: '100%',
@@ -63,22 +73,25 @@ const styles = StyleSheet.create({
   },
   textBackground: {
     width: '100%',
-    height: 200,
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: 400,
+    // justifyContent: 'center',
+    // alignItems: 'center',
   },
   textContainer: {
-    paddingHorizontal: 20,
+    display:'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    maxWidth:240,
   },
   title: {
+    marginTop:102,
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
     fontFamily: 'Gotham-Bold',
-    color: '#fff',
+    color: '#000',
+    paddingHorizontal: 30,
   },
   description: {
     fontSize: 16,

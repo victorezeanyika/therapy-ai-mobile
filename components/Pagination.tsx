@@ -1,3 +1,4 @@
+import { Colors } from '@/constants/Colors';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import Animated, {
   interpolate,
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
   dot: {
     height: 10,
     borderRadius: 5,
-    backgroundColor: 'white',
+    backgroundColor: Colors.harmony.primary,
     marginHorizontal: 8,
   },
 }); 
