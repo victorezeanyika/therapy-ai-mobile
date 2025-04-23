@@ -35,8 +35,10 @@ export function ThemedText({
 
 const styles = StyleSheet.create({
   default: {
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: 32,
+    lineHeight: 38,
+    fontFamily:'Hc',
+    fontWeight:500,
   },
   defaultSemiBold: {
     fontSize: 16,
@@ -47,10 +49,13 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     lineHeight: 32,
+    fontFamily:'Gotham-Bold'
   },
   subtitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: 500,
+    lineHeight:30,
+    fontFamily:'GothamBook'
   },
   link: {
     lineHeight: 30,

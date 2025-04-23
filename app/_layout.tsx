@@ -14,7 +14,12 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    GothamBook: require('../assets/fonts/Gotham-Book.otf'),
+    GothamMedium: require('../assets/fonts/Gotham-Medium.otf'),
+    GothamBold: require('../assets/fonts/Gotham-Bold.otf'),
+    GothamLight: require('../assets/fonts/Gotham-Light.otf'),
+    Hb: require('../assets/fonts/hb.ttf'),
+    Hc: require('../assets/fonts/hc.otf'),
   });
 
   useEffect(() => {
@@ -30,7 +35,12 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="splash" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)/index" options={{ headerShown: false }} />
+        <Stack.Screen name="welcome" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(onboarding)/index" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

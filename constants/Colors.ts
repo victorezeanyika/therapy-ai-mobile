@@ -23,4 +23,16 @@ export const Colors = {
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
   },
+  harmony: {
+    white:"#F7F4F2",
+    primary: "#2A9D8F",
+    primarydark: "#141718", // Calming emerald green
+    secondary: "#264653", // Deep peaceful blue-green
+    accent: "#287271", // Muted teal accent
+    light: "#8ECEC3", // Soft emerald highlight
+    bg: "#F5F7F7", // Slightly tinted background
+    // black: "#111111",       // Very dark black for text
+    // 
+    // 
+    }
 };
