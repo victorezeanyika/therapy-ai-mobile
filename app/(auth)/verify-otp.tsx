@@ -3,6 +3,9 @@ import { useState, useRef } from 'react';
 import { Colors } from '@/constants/Colors';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useVerifyOtpMutation } from '@/features/auth-api';
+import { ThemedView } from '@/components/ThemedView';
+import BackButton from '@/components/ui/backbutton';
+import { ThemedText } from '@/components/ThemedText';
 
 export default function VerifyOtp() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -41,24 +44,43 @@ export default function VerifyOtp() {
   
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>0TP Verification Code</Text>
-      <Text style={styles.subtitle}>
+    <ThemedView
+    lightColor='#F7F4F2'
+    darkColor='#141718'
+    style={styles.container}>
+    <BackButton />
+        <View 
+        style={{
+        marginTop:56,
+        justifyContent:'center',
+        alignItems:'center',
+        display:'flex',
+        }}>
+      <ThemedText 
+      type='title' 
+      style={{
+      }}>0TP</ThemedText>
+      <ThemedText style={styles.title}>Verification Code</ThemedText>
+      <ThemedText
+      darkColor='#969696'
+      type='subtitle'
+       style={styles.subtitle}>
         We have sent an OTP code to your email.
-      </Text>
+      </ThemedText>
+      </View>
 
       <View style={styles.otpContainer}>
         {otp.map((digit, index) => (
           <TextInput
-            key={index}
-            ref={(ref) => (inputs.current[index] = ref)}
-            style={styles.otpInput}
-            keyboardType="number-pad"
-            maxLength={1}
-            value={digit}
-            onChangeText={(text) => handleChange(text, index)}
-            autoFocus={index === 0}
-            returnKeyType="next"
+          key={index}
+          ref={(ref) => (inputs.current[index] = ref)}
+          style={styles.otpInput}
+          keyboardType="number-pad"
+          maxLength={1}
+          value={digit}
+          onChangeText={(text) => handleChange(text, index)}
+          autoFocus={index === 0}
+          returnKeyType="next"
           />
         ))}
       </View>
@@ -66,38 +88,34 @@ export default function VerifyOtp() {
       <TouchableOpacity style={styles.button} onPress={handleVerify}>
         <Text style={styles.buttonText}>Verify</Text>
       </TouchableOpacity>
-    </View>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    justifyContent: 'center',
     flex: 1,
-    backgroundColor: '#fff',
+    marginTop:50,
   },
   title: {
-    fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: 'medium',
+    fontFamily:'Gotham-Book',
+    fontSize:20,
     marginBottom: 8,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 32,
+    marginTop:20,
     textAlign: 'center',
   },
   otpContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 30,
-    paddingHorizontal: 10,
+    marginTop:50,
+    gap:5,
   },
   otpInput: {
-    width: 50,
-    height: 50,
+    width: 59,
+    height: 63,
     borderRadius: 25,
     borderWidth: 1.5,
     borderColor: Colors.harmony.primary,

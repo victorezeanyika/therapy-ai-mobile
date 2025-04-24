@@ -40,6 +40,7 @@ const RenderField = ({field, props}:{field:any, props:any}) => {
                             fontSize: 14,
                             height: '100%',
                             padding: 10,
+                            color:Colors.harmony.light
                         }}
                         keyboardType={props.keyboardType}
                         value={field.value}

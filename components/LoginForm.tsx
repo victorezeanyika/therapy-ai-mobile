@@ -17,7 +17,10 @@ export default function LoginForm() {
   const [login, {isLoading}] = useLoginMutation();
 
   const userLoginSchema = z.object({
-    email: z.string().email({ message: 'Invalid email address' }),
+    email: z
+    .string()
+    .email({ message: 'Invalid email address' })
+    .transform((val) => val.toLowerCase()),
     password: z.string().min(8, { message: 'Password must be at least 8 characters.' }),
   });
 
@@ -64,15 +67,6 @@ export default function LoginForm() {
         errors={errors.password}
         fieldType="input"
         icon="lock"
-        rightIcon={
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Ionicons
-              name={showPassword ? 'eye-off' : 'eye'}
-              size={20}
-              color="#666"
-            />
-          </TouchableOpacity>
-        }
       />
 
       <View style={styles.optionsContainer}>
@@ -102,7 +96,7 @@ export default function LoginForm() {
         onPress={handleSubmit(onSubmit)}
         disabled={isLoading}
       >
-        <ThemedText style={styles.buttonText}>
+        <ThemedText  style={styles.buttonText}>
           {isLoading ? 'Logging in...' : 'Login'}
         </ThemedText>
       </TouchableOpacity>
@@ -186,6 +180,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+    fontFamily:'Gotham-Book'
   },
   dividerContainer: {
     flexDirection: 'row',

@@ -20,7 +20,7 @@ export default function SplashScreen() {
 
     // Navigate to welcome page after animation
     const timer = setTimeout(() => {
-      router.replace('/index');
+      router.replace('/settings');
     }, 2000);
 
     return () => clearTimeout(timer);
