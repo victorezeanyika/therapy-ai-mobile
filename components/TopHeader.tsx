@@ -9,7 +9,8 @@ export default function TopHeader({title}:{title:string}){
             justifyContent:'space-between',
             alignItems:'center',
             flexDirection:'row',
-            padding:32,
+            paddingTop:32,
+            paddingHorizontal:20,
         }}>
             <BackButton />
             <ThemedText>{title}</ThemedText>

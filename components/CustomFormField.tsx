@@ -7,6 +7,9 @@ import { Text, View } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
 
+import RNPickerSelect from 'react-native-picker-select';
+
+
 const RenderField = ({field, props}:{field:any, props:any}) => {
     switch (props.fieldType) {
         case 'input':
@@ -23,7 +26,7 @@ const RenderField = ({field, props}:{field:any, props:any}) => {
                     height: 46,
                     alignItems: 'center',
                     paddingHorizontal:20,
-                    
+                    marginTop: 8,
                 }}> 
                 {props.icon &&
                  <Feather 
@@ -64,7 +67,69 @@ const RenderField = ({field, props}:{field:any, props:any}) => {
                     )}
                 </ThemedView>
             );
-        default:
+        case 'select':
+                return (
+                  <ThemedView
+                    lightColor="#FFFFFF"
+                    darkColor="#232627"
+                    style={{
+                      borderRadius: 10,
+                      flexDirection: 'row',
+                      width: '100%',
+                      height: 46,
+                      alignItems: 'center',
+                      paddingHorizontal: 20,
+                      marginTop: 8,
+                    }}
+                  >
+                    {props.icon && (
+                      <Feather 
+                        name={props.icon}
+                        color='#ACB5BB'
+                        size={16}
+                      />
+                    )}
+                    <View style={{ flex: 1 }}>
+                      <RNPickerSelect
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        placeholder={{ label: props.placeholder, value: null }}
+                        items={props.options || []}
+                        style={{
+                          inputAndroid: {
+                            color: Colors.harmony.light,
+                            fontFamily: 'Gotham-Book',
+                            fontSize: 14,
+                            paddingRight: 30,
+                            paddingLeft: 10,
+                            height: '100%',
+                          },
+                          inputIOS: {
+                            color: Colors.harmony.light,
+                            fontFamily: 'Gotham-Book',
+                            fontSize: 14,
+                            paddingRight: 30,
+                            paddingLeft: 10,
+                            height: '100%',
+                          },
+                        }}
+                        Icon={() => (
+                          <Feather
+                            name="chevron-down"
+                            size={16}
+                            color="#ACB5BB"
+                            style={{
+                              position: 'absolute',
+                              right: 0,
+                              top: 15,
+                            }}
+                          />
+                        )}
+                      />
+                    </View>
+                  </ThemedView>
+                );
+            default:
             return null;
     }
 };

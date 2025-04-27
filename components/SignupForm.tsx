@@ -17,10 +17,13 @@ const userSignupSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
   password: z.string().min(8, { message: "Password must be at least 8 characters." }),
   confirmpassword: z.string(),
-}).refine((data) => data.password === data.confirmpassword, {
+})
+.refine((data) => data.password === data.confirmpassword, {
   message: "Passwords do not match",
   path: ["confirmpassword"],
 });
+
+
 
 export default function SignupForm() {
   const [register, {isLoading}] = useRegisterMutation();

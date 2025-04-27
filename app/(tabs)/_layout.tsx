@@ -7,6 +7,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { AntDesign, FontAwesome5, Ionicons } from '@expo/vector-icons';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -30,33 +31,41 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color }) => 
+          <AntDesign name="appstore-o" size={20} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="journal"
         options={{
-          title: 'Explore',
+          title: 'Journal',
           tabBarIcon: ({ color }) => 
-          <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          <Ionicons name="add-circle-outline" size={20} color={color} />,
         }}
       />
+     
        <Tabs.Screen
+        name="chat"
+        options={{
+          title: 'Chat',
+          tabBarIcon: ({ color }) => 
+            <FontAwesome5 name="robot" size={20} color={color} />,
+        }}
+      />
+        <Tabs.Screen
         name="settings"
         options={{
           title: 'Settings',
           tabBarIcon: ({ color }) => 
-          <IconSymbol
-           size={28} name="dog.fill" color={color} />,
+            <Ionicons name="settings-outline" size={20} color={color} />,
         }}
       />
        <Tabs.Screen
-        name="dashboard"
+        name="mood"
         options={{
-          title: 'Settings',
+          title: 'Mood',
           tabBarIcon: ({ color }) => 
-          <IconSymbol
-           size={28} name="pause.fill" color={color} />,
+            <Ionicons name="happy-outline" size={20} color={color} />,
         }}
       />
     </Tabs>

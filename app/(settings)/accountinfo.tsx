@@ -5,49 +5,43 @@ import { Colors } from "@/constants/Colors";
 import { View, SafeAreaView, TouchableOpacity } from "react-native";
 import { Feather, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { router } from "expo-router";
 
 const settingData = [
   {
-    title: "Account Info",
+    title: "Personal Infomation",
     sub: "Edit your personal info",
-    icon: <Feather name="user" size={20} color="white" />,
-    link: "/(settings)/accountinfo",
+    link: "/(settings)/personalinfo",
   },
   {
-    title: "Security & Data",
-    sub: "Manage all of your personal information",
-    icon: <MaterialIcons name="security" size={20} color="white" />,
-    link: "SecuritySettings",
+    title: "Payment Methods",
+    sub: "Manage all of your payment methods",
+    link: "(settings)/paymentmethods",
   },
   {
-    title: "App Theme",
-    sub: "Swap the app theme to dark mode",
-    icon: <Ionicons name="moon" size={20} color="white" />,
-    link: "AppTheme",
-  },
-  {
-    title: "Log out",
-    sub: "Log out of this device",
-    icon: <MaterialIcons name="logout" size={20} color="white" />,
-    link: "Logout",
+    title: "Delete My Account",
+    sub: "Delete my Serentis account",
+    link: "(settings)/delete",
+    red:true,
   },
 ];
 
-export default function SettingsPage() {
+export default function AccountInfo() {
+
   return (
       <ThemedView style={{
         height:'100%',
         marginTop:20,
       }}>
-        <TopHeader title="Settings" />
+        <TopHeader title="Account Info" />
         <View style={{ padding: 20, gap: 15 }}>
           {settingData.map((item) => (
             <SettingCard
               key={item.title}
               title={item.title}
               sub={item.sub}
-              icon={item.icon}
+              red={item.red}
               link={item.link}
             />
           ))}
@@ -61,9 +55,12 @@ type SettingCardProps = {
   sub: string;
   icon: React.ReactNode;
   link: string;
+  red:boolean
 };
 
-export function SettingCard({ title, sub, icon, link }: SettingCardProps) {
+export function SettingCard({ title, sub, icon, link , red}: SettingCardProps) {
+  const iconSvg = useThemeColor({light:"#000", dark:"#fff"}, 'ds');
+
 
   const handlePress = () => {
     if (link === "Logout") {
@@ -97,26 +94,19 @@ export function SettingCard({ title, sub, icon, link }: SettingCardProps) {
           width: "100%",
           flexDirection: "row",
           alignItems: "center",
+          justifyContent:'space-between',
           gap: 12,
         }}
       >
-        <View
-          style={{
-            backgroundColor: Colors.harmony.primary,
-            width: 43,
-            height: 43,
-            borderRadius: 15,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {icon}
-        </View>
+        
         <View>
           <ThemedText
+          darkColor="#FFFFFF"
+          lightColor="#000000"
             style={{
               fontSize: 12,
               fontFamily: "Gotham",
+              // color:red ? "red": "",
             }}
           >
             {title}
@@ -133,6 +123,21 @@ export function SettingCard({ title, sub, icon, link }: SettingCardProps) {
           >
             {sub}
           </ThemedText>
+        </View>
+        <View
+          style={{
+            width: 43,
+            height: 43,
+            borderRadius: 15,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <MaterialIcons 
+          name="chevron-right"
+          size={24}
+          color={iconSvg}
+          />
         </View>
       </ThemedView>
     </TouchableOpacity>

@@ -96,7 +96,7 @@ export default function WelcomeScreen() {
         >
           <CustomButton 
            title='Get Started'
-           onPress={() => router.push('/(tabs)/settings')}
+           onPress={() => router.push('/(tabs)/mood')}
           />
           {/* <ThemedText 
           type='subtitle'

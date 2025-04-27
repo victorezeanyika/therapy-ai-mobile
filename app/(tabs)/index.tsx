@@ -1,69 +1,228 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
+import React from 'react';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { MaterialIcons, Feather } from '@expo/vector-icons';
+import * as Progress from 'react-native-progress';
+import Header from '../../components/tabs/_components/header';
+import Upgrade from '../../components/tabs/_components/upgrade';
 import { ThemedView } from '@/components/ThemedView';
+import MoodLineChart from '@/components/moods/mood-line-chart';
+import { chartData } from '@/constants';
 
 export default function HomeScreen() {
+  const weekDays = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
+  const goals = [
+    {
+      id: "goal1",
+      title: "Attend at least two mindfulness sessions",
+      subtitle: "Improve emotional regulation",
+      completed: false
+    },
+    {
+      id: "goal2",
+      title: "Read one book on assertiveness",
+      subtitle: "Enhance communication skills",
+      completed: true
+    },
+    {
+      id: "goal3",
+      title: "Practice self-affirmations daily",
+      subtitle: "Boost self-esteem",
+      completed: false
+    }
+  ];
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
+      <ThemedView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        {/* Header */}
+       <Header />
+        {/* Upgrade Card */}
+       <Upgrade />
+
+        {/* Mood Chart */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Mood Tracking</Text>
+          <View style={styles.moodLegend}>
+            <View style={styles.legendItem}>
+              <View style={[styles.legendDot, { backgroundColor: '#2a9d8f' }]} />
+              <Text style={styles.legendText}>Happy</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <View style={[styles.legendDot, { backgroundColor: '#ff0000' }]} />
+              <Text style={styles.legendText}>Sad</Text>
+            </View>
+          </View>
+          <MoodLineChart data={chartData} />
+        </View>
+
+        {/* Monthly Goals */}
+        <View style={styles.card}>
+          <View style={styles.goalHeader}>
+            <Text style={styles.cardTitle}>Monthly Goals</Text>
+            <TouchableOpacity style={styles.addButton}>
+              <Feather name="plus" size={20} color="#2a9d8f" />
+            </TouchableOpacity>
+          </View>
+          
+          {goals.map((goal) => (
+            <View key={goal.id} style={styles.goalItem}>
+              <View style={styles.goalText}>
+                <Text style={styles.goalTitle}>{goal.title}</Text>
+                <Text style={styles.goalSubtitle}>{goal.subtitle}</Text>
+              </View>
+              <TouchableOpacity 
+                style={[
+                  styles.checkbox,
+                  goal.completed && styles.checkboxChecked
+                ]}
+              >
+                {goal.completed && <Feather name="check" size={16} color="white" />}
+              </TouchableOpacity>
+            </View>
+          ))}
+
+          <View style={styles.progressSection}>
+            <Text style={styles.progressTitle}>Progress</Text>
+            <View style={styles.progressRow}>
+              <Text style={styles.progressText}>Mindfulness Sessions Attended</Text>
+              <Text style={styles.progressPercent}>60%</Text>
+            </View>
+            <Progress.Bar 
+              progress={0.6} 
+              width={null} 
+              color="#2a9d8f" 
+              unfilledColor="#dbe0e5"
+              borderWidth={0}
+              height={8}
+              style={styles.progressBar}
+            />
+          </View>
+        </View>
+      </ScrollView>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    flex: 1,
+    padding:20,
+    marginTop:20,
+  },
+  scrollView: {
+    flex: 1,
+  },
+
+  card: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 16,
+  },
+  moodLegend: {
+    flexDirection: 'row',
+    marginBottom: 16,
+  },
+  legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    marginRight: 16,
   },
-  stepContainer: {
-    gap: 8,
+  legendDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginRight: 8,
+  },
+  legendText: {
+    fontSize: 12,
+  },
+  weekDays: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 16,
+  },
+  dayText: {
+    fontSize: 12,
+    color: '#666',
+  },
+  goalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  addButton: {
+    padding: 8,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 20,
+  },
+  goalItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+  },
+  goalText: {
+    flex: 1,
+    marginRight: 16,
+  },
+  goalTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+  goalSubtitle: {
+    fontSize: 12,
+    color: '#637787',
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: '#dbe0e5',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkboxChecked: {
+    backgroundColor: '#2a9d8f',
+    borderColor: '#2a9d8f',
+  },
+  progressSection: {
+    marginTop: 24,
+  },
+  progressTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    marginBottom: 12,
+  },
+  progressRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  progressText: {
+    fontSize: 12,
+  },
+  progressPercent: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  progressBar: {
+    width: '100%',
+    borderRadius: 4,
   },
 });
