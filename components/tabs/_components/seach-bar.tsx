@@ -10,6 +10,7 @@ interface SearchBarProps {
 }
 
 const SearchBar = ({ value, onChangeText }: SearchBarProps) => {
+  const inputText = useThemeColor({light:'#000000', dark:'#FFFFFF'}, 'button')
   const bgColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'icon');
   return (
     <ThemedView
@@ -21,7 +22,7 @@ const SearchBar = ({ value, onChangeText }: SearchBarProps) => {
         placeholder="Search"
         value={value}
         onChangeText={onChangeText}
-        style={styles.input}
+        style={[styles.input, {color:inputText}]}
       />
     </ThemedView>
   );

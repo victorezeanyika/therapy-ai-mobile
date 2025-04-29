@@ -8,8 +8,18 @@ import Upgrade from '../../components/tabs/_components/upgrade';
 import { ThemedView } from '@/components/ThemedView';
 import MoodLineChart from '@/components/moods/mood-line-chart';
 import { chartData } from '@/constants';
+import { useAppSelector } from '@/features/hooks';
+import { ThemedText } from '@/components/ThemedText';
+import { useGetDashboardQuery } from '@/features/journal-api';
+import UpcommingSession from '@/components/upcoming-session';
+
 
 export default function HomeScreen() {
+
+  const { user } = useAppSelector(state => state.auth);
+  console.log(user, 'this is the user');
+  const { data: dashboardData } = useGetDashboardQuery();
+  console.log(dashboardData, 'this is the dashboard data');
   const weekDays = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
   const goals = [
     {
@@ -36,25 +46,29 @@ export default function HomeScreen() {
       <ThemedView style={styles.container}>
       <ScrollView style={styles.scrollView}>
         {/* Header */}
-       <Header />
+       <Header  name={user?.name}/>
         {/* Upgrade Card */}
        <Upgrade />
 
         {/* Mood Chart */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Mood Tracking</Text>
+        <ThemedView style={styles.card}>
+          <ThemedText style={styles.cardTitle}>Mood Tracking</ThemedText>
           <View style={styles.moodLegend}>
             <View style={styles.legendItem}>
               <View style={[styles.legendDot, { backgroundColor: '#2a9d8f' }]} />
-              <Text style={styles.legendText}>Happy</Text>
+              <ThemedText style={styles.legendText}>Happy</ThemedText>
             </View>
             <View style={styles.legendItem}>
               <View style={[styles.legendDot, { backgroundColor: '#ff0000' }]} />
-              <Text style={styles.legendText}>Sad</Text>
+              <ThemedText style={styles.legendText}>Sad</ThemedText>
             </View>
           </View>
           <MoodLineChart data={chartData} />
-        </View>
+          <ThemedText style={styles.cardTitle}>
+          Over the past week, your mood has been generally positive, with a slight dip occurring around mid-week. This temporary decline may be linked to increased stress levels reported during that time. Read More
+          </ThemedText>
+          <UpcommingSession />
+        </ThemedView>
 
         {/* Monthly Goals */}
         <View style={styles.card}>
@@ -115,18 +129,16 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    backgroundColor: 'white',
     borderRadius: 10,
-    padding: 16,
     marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 1, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 2,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 1, height: 1 },
+    // shadowOpacity: 0.1,
+    // shadowRadius: 6,
+    // elevation: 2,
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: '600',
     marginBottom: 16,
   },

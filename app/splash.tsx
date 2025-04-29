@@ -20,7 +20,7 @@ export default function SplashScreen() {
 
     // Navigate to welcome page after animation
     const timer = setTimeout(() => {
-      router.replace('/settings');
+      router.replace('/splash');
     }, 2000);
 
     return () => clearTimeout(timer);
@@ -68,6 +68,5 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     fontFamily:'Hc',
-    color: '#fff',
   },
 }); 

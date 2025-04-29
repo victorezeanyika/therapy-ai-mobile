@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Image, StyleSheet, TouchableOpacity, FlatList, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  View, Text, Image, StyleSheet, TouchableOpacity, FlatList,
+  TextInput, KeyboardAvoidingView, Platform, Animated, Dimensions
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { fetchMotivationalQuote, featuresData } from '../../features/mockApi';
 import FeatureCard from '../../components/tabs/_components/feature-card';
@@ -8,10 +11,14 @@ import { ThemedText } from '@/components/ThemedText';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 
+const screenWidth = Dimensions.get('window').width;
+
 export default function WelcomeScreen() {
   const navigation = useNavigation();
   const [quote, setQuote] = useState('');
   const [inputText, setInputText] = useState('');
+  const [menuVisible, setMenuVisible] = useState(false);
+  const sidebarAnim = useRef(new Animated.Value(-screenWidth)).current;
 
   useEffect(() => {
     async function loadQuote() {
@@ -27,13 +34,47 @@ export default function WelcomeScreen() {
     }
   };
 
+  const toggleMenu = () => {
+    const toValue = menuVisible ? -screenWidth : 0;
+    Animated.timing(sidebarAnim, {
+      toValue,
+      duration: 300,
+      useNativeDriver: false,
+    }).start(() => setMenuVisible(!menuVisible));
+  };
+
+  const dummyConversations = [
+    { id: '1', name: 'My First Chat' },
+    { id: '2', name: 'Stress Therapy' },
+    { id: '3', name: 'Anxiety Tips' },
+  ];
+
   return (
     <KeyboardAvoidingView 
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={80}
     >
+      {/* Sidebar */}
+      <Animated.View style={[styles.sidebar, { left: sidebarAnim }]}>
+      <TouchableOpacity onPress={toggleMenu} style={styles.closeIcon}>
+        <MaterialIcons name="close" size={28} color={Colors.harmony.primary} />
+      </TouchableOpacity>
+      <ThemedText style={styles.sidebarTitle}>My Conversations</ThemedText>
+      {dummyConversations.map(conv => (
+        <TouchableOpacity key={conv.id} style={styles.convoItem}>
+          <ThemedText style={styles.convoText}>{conv.name}</ThemedText>
+        </TouchableOpacity>
+      ))}
+    </Animated.View>
+
+
       <ThemedView style={styles.container}>
+        {/* Menu Icon */}
+        <TouchableOpacity style={styles.menuIcon} onPress={toggleMenu}>
+          <MaterialIcons name="menu" size={28} color={Colors.harmony.primary} />
+        </TouchableOpacity>
+
         <Image
           source={require('../../assets/images/frame1.png')}
           style={styles.image}
@@ -74,7 +115,13 @@ export default function WelcomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 26, justifyContent: 'flex-end', gap: 40, alignItems: 'center' },
+  container: {
+    flex: 1,
+    padding: 26,
+    justifyContent: 'flex-end',
+    gap: 40,
+    alignItems: 'center',
+  },
   image: {
     maxWidth: 224,
     maxHeight: 224,
@@ -95,10 +142,13 @@ const styles = StyleSheet.create({
   input: {
     padding: 10,
     width: '80%',
-    color:Colors.harmony.primary,
-    fontSize:14,
-    fontWeight:'500',
-    fontFamily:'Gotham-Medium',
+    color: Colors.harmony.primary,
+    fontSize: 14,
+    fontWeight: '500',
+    fontFamily: 'Gotham-Medium',
+  },
+  closeIcon:{
+    
   },
   quoteButton: {
     backgroundColor: Colors.harmony.primary,
@@ -113,5 +163,37 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',
+  },
+  menuIcon: {
+    position: 'absolute',
+    top: 60,
+    left: 20,
+    zIndex: 10,
+  },
+  sidebar: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    width: screenWidth * 0.8,
+    backgroundColor: '#fff',
+    paddingTop: 80,
+    paddingHorizontal: 20,
+    zIndex: 20,
+    elevation: 5,
+  },
+  sidebarTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: Colors.harmony.primary,
+  },
+  convoItem: {
+    paddingVertical: 10,
+    borderBottomColor: '#ddd',
+    borderBottomWidth: 1,
+  },
+  convoText: {
+    fontSize: 16,
+    color: '#333',
   },
 });

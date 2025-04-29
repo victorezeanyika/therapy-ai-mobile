@@ -2,10 +2,10 @@ import { ThemedText } from "@/components/ThemedText";
 import {  MaterialIcons } from "@expo/vector-icons";
 import { View, StyleSheet, TouchableOpacity, } from "react-native";
 
-export default function Header(){
+export default function Header({name}: {name: string}){
     return (
         <View style={styles.header}>
-        <ThemedText style={styles.greeting}>Hi John Doe,</ThemedText>
+        <ThemedText style={styles.greeting}>Hi {name},</ThemedText>
         <TouchableOpacity style={styles.notificationButton}>
           <MaterialIcons name="notifications-none" size={24} color="#2a9d8f" />
         </TouchableOpacity>

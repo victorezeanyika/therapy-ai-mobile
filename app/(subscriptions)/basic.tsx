@@ -1,129 +1,169 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, ActivityIndicator, Alert } from 'react-native';
+import { router } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import TopHeader from '@/components/TopHeader';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
+import { useCreatePaymentIntentMutation, useGetSubscriptionsQuery } from '@/features/subscriptions-api';
+import { useAppSelector } from '@/features/hooks';
 const { width } = Dimensions.get('window');
 
-const BasicPlanScreen = () => {
-  const navigation = useNavigation();
+export default function BasicPlanScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
-
-  const plans = [
-    {
-      title: 'Monthly',
-      price: '$20',
-      features: ['Access basic tools', 'Track 3 goals', 'Community Support', 'Basic Reports', 'Cancel anytime'],
-    },
-    {
-      title: 'Annually',
-      price: '$240',
-      features: ['Access basic tools', 'Track 3 goals', 'Community Support', 'Basic Reports', 'Save 20% yearly'],
-    },
-  ];
+  const { data: plan, isLoading, isError } = useGetSubscriptionsQuery();
+  const [createPaymentIntent, { isLoading: isCreatingPaymentIntent }] = useCreatePaymentIntentMutation();
+  const {user} = useAppSelector(state => state.auth)
 
   const handleScroll = (event: any) => {
     const index = Math.round(event.nativeEvent.contentOffset.x / width);
     setCurrentIndex(index);
   };
 
+  const handlePay = async (planKey: string) => {
+    try {
+      const response = await createPaymentIntent({
+        email: user?.email,
+        plan: planKey,
+      }).unwrap();
+
+      if (response?.sessionUrl) {
+        router.push({
+          pathname: '/checkout-screen',
+          params: { url: response.sessionUrl }
+        });
+      } else {
+        Alert.alert('Payment Error', 'No checkout URL returned.');
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      Alert.alert('Payment Error', 'Failed to initiate payment.');
+    }
+  };
+
+  const plans = plan
+    ? Object.entries(plan).map(([key, value]) => ({
+        key,
+        title: value.name,
+        price: value.price === 0 ? 'Free' : `€${value.price}`,
+        rawPrice: value.price,
+        features: value.features,
+      }))
+    : [];
+
   const renderItem = ({ item }: any) => (
     <View style={styles.card}>
       <View style={styles.planBadge}>
-        <Text style={styles.planBadgeText}>Basic</Text>
+        <Text style={styles.planBadgeText}>{item.title}</Text>
       </View>
-      <View style={{
-        height: 178,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderBottomWidth: 1, // <-- Only bottom border
-        borderBottomColor: '#001133',
-        borderStyle: 'dashed', // <-- Dashed style will now apply properly
-        backgroundColor: '#fff',
-        width: '100%',
-        overflow: 'hidden',
-        borderRadius: 10.9,
-        }}>
+      <View
+        style={{
+          height: 178,
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderBottomWidth: 1,
+          borderBottomColor: '#001133',
+          borderStyle: 'dashed',
+          backgroundColor: '#fff',
+          width: '100%',
+          overflow: 'hidden',
+          borderRadius: 10.9,
+        }}
+      >
         <Text style={styles.planTitle}>{item.title}</Text>
         <Text style={styles.planPrice}>{item.price}</Text>
-        </View>
-
+      </View>
 
       <View style={styles.featureList}>
         {item.features.map((feature: string, idx: number) => (
           <View key={idx} style={styles.featureItem}>
-            {/* <View style={styles.bullet} /> */}
-            <View style={{flexDirection: 'row', alignItems: 'center', gap:5}}>
-             <View style={styles.bullet} >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+              <View style={styles.bullet}>
                 <MaterialIcons name="chevron-right" size={12} color={Colors.harmony.primary} />
-            </View>
-            <Text style={styles.featureText}>{feature}</Text>
+              </View>
+              <Text style={styles.featureText}>{feature}</Text>
             </View>
             <View style={styles.check}>
-            <MaterialIcons name="check" size={12} color="white" />
+              <MaterialIcons name="check" size={12} color="white" />
             </View>
           </View>
         ))}
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Get Started</Text>
-      </TouchableOpacity>
-      </View>
 
+        {item.rawPrice > 0 && (
+          <TouchableOpacity
+            style={[styles.button, isCreatingPaymentIntent && { opacity: 0.7 }]}
+            onPress={() => handlePay(item.key)}
+            disabled={isCreatingPaymentIntent}
+          >
+            <Text style={styles.buttonText}>
+              {isCreatingPaymentIntent ? 'Processing...' : 'Pay'}
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 
-  return (
-    <ThemedView style={styles.container}>
-     <TopHeader title='Plan Overview' />
+  if (isLoading) {
+    return (
+      <ThemedView style={styles.container}>
+        <TopHeader title="Plan Overview" />
+        <ActivityIndicator size="large" color={Colors.harmony.primary} />
+      </ThemedView>
+    );
+  }
 
-      <FlatList
-        ref={flatListRef}
-        data={plans}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderItem}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
-      />
+  if (isError || !plan) {
+    return (
+      <ThemedView style={styles.container}>
+        <TopHeader title="Plan Overview" />
+        <Text style={{ textAlign: 'center', marginTop: 20 }}>
+          Failed to load plans. Please try again later.
+        </Text>
+      </ThemedView>
+    );
+  }
+return (
+  <ThemedView style={styles.container}>
+    <TopHeader title="Plan Overview" />
+    <FlatList
+      ref={flatListRef}
+      data={plans}
+      keyExtractor={(item, index) => index.toString()}
+      renderItem={renderItem}
+      horizontal
+      pagingEnabled
+      showsHorizontalScrollIndicator={false}
+      onScroll={handleScroll}
+    />
 
-      {/* Pagination Indicator */}
-      <View style={styles.pagination}>
-        {plans.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.dot,
-              { backgroundColor: currentIndex === index ? '#009688' : '#ccc' },
-            ]}
-          />
-        ))}
-      </View>
-    </ThemedView>
-  );
+    <View style={styles.pagination}>
+      {plans.map((_, index: number) => (
+        <View
+          key={index}
+          style={[
+            styles.dot,
+            { backgroundColor: currentIndex === index ? Colors.harmony.primary : '#ccc' },
+          ]}
+        />
+      ))}
+    </View>
+  </ThemedView>
+);
 };
-
-export default BasicPlanScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 50,
+    paddingTop: 20,
   },
-
   card: {
-    width: width * 0.8,
+    width: width * 0.9,
     borderRadius: 16,
     padding: 20,
     alignItems: 'center',
     alignSelf: 'center',
-    // elevation: 3,
-    // shadowColor: '#000',
-    // shadowOpacity: 0.1,
-    // shadowOffset: { width: 0, height: 2 },
     marginHorizontal: width * 0.1 / 2,
   },
   planBadge: {
@@ -145,7 +185,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
     fontFamily: 'Gotham-Bold',
-   
   },
   planTitle: {
     fontSize: 33,
@@ -167,7 +206,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-
   },
   featureItem: {
     flexDirection: 'row',
@@ -200,7 +238,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   featureText: {
-    fontSize: 14,
+    fontSize: 11,
     color: '#001133',
     fontFamily: 'Gotham-Book',
     fontWeight: '500',

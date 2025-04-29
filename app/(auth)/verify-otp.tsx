@@ -5,18 +5,25 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { 
   authApi,
   useSubmitUserPreferencesMutation,
-  useVerifyOtpMutation, 
+  useVerifyOtpMutation,
+  useGetProfileQuery,
 } from '@/features/auth-api';
 import { ThemedView } from '@/components/ThemedView';
 import BackButton from '@/components/ui/backbutton';
 import { ThemedText } from '@/components/ThemedText';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '@/features/auth-slice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAppSelector } from '@/features/hooks';
 
 export default function VerifyOtp() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const inputs = useRef<Array<TextInput | null>>([]);
   const { email } = useLocalSearchParams<{ email: string }>();
   const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
-  // const [submitPreferences, { isLoading: isSubmit, error }] = useSubmitUserPreferencesMutation();
+  const dispatch = useDispatch();
+  const { refetch: refetchProfile } = useGetProfileQuery();
+  const { user } = useAppSelector(state => state.auth);
 
   const handleChange = (text: string, index: number) => {
     const newOtp = [...otp];
@@ -35,15 +42,18 @@ export default function VerifyOtp() {
     if (code.length === 6) {
       Keyboard.dismiss();
       try {
-        await verifyOtp({ email, otp: code }).unwrap();
-
-        // Fetch preferences after successful OTP verification
-        // const result = await authApi.endpoints.getUserPreferences.initiate(undefined).unwrap();
-        // if (!result?.primaryConcern) {
-          router.replace('/assessment'); // Redirect to assessment
-        // } else {
-        //   router.replace('/(tabs)/explore'); // Redirect to main screen
-        // }
+        const result = await verifyOtp({ email, otp: code }).unwrap();
+        console.log(result, 'result');
+        
+        // Save access token
+        await AsyncStorage.setItem('accessToken', result.accessToken);
+        
+        // Fetch user profile
+        const { data: userProfile } = await refetchProfile();        
+        if (userProfile) {
+          dispatch(setCredentials({ user: userProfile, accessToken: result.accessToken }));
+          router.replace('/(tabs)');
+        }
       } catch (error: any) {
         alert(error?.data?.message || error?.data?.error || error?.message || 'An error occurred');
       }

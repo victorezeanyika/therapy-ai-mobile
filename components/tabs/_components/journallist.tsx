@@ -19,7 +19,12 @@ const JournalList = ({ journals }: JournalListProps) => {
       data={journals}
       keyExtractor={(_, index) => index.toString()}
       renderItem={({ item }) => (
-        <JournalEntryCard title={item.title} date={item.date} content={item.content} />
+        <JournalEntryCard 
+        title={item.title} 
+        date={item.date} 
+        content={item.content}
+        tags={item.tags}
+         />
       )}
       />
       </View>

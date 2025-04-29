@@ -11,6 +11,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import CustomFormField from './CustomFormField';
 import { useRegisterMutation } from '@/features/auth-api';
+import { useToast } from '@/context/toast-context';
 
 const userSignupSchema = z.object({
   name: z.string().min(2, { message: "Full Name is required" }),
@@ -26,6 +27,7 @@ const userSignupSchema = z.object({
 
 
 export default function SignupForm() {
+  const {sucess, error:toastError} = useToast();
   const [register, {isLoading}] = useRegisterMutation();
   const {
     control,
@@ -41,13 +43,11 @@ export default function SignupForm() {
       console.log(data, 'datasd')
       const user = await register({ name, email, password }).unwrap();
       await AsyncStorage.setItem('user', JSON.stringify(user));
-      Alert.alert("Success", "Signup successful");
-      router.push("/(tabs)");
+      sucess("Signup successful");
+      router.push("/(auth)/assessment");
     } catch (error: any) {
-      Alert.alert(
-        "Signup Failed",
-        error?.response?.data?.message || error.message || "Something went wrong"
-      );
+      toastError(error?.response?.data?.message || error.message || "Something went wrong");
+      console.log(error, 'error')
     }
   };
 

@@ -24,19 +24,31 @@ export default function ChatScreen() {
   const [sendMessageMutation, { isLoading: isSendingMessage }] = useSendMessageMutation();
   const [sessionId, setSessionId] = useState<string | null>(null);
 
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    { sender: 'bot', text: 'The first step to improving your mental health skills is choosing a specific area to focus on. Do you have something in mind?' }
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
 
   useEffect(() => {
     const initializeSession = async () => {
       try {
         const response = await createSession().unwrap();
-        setSessionId(response.sessionId);
+        console.log('Session response:', response);
+        setSessionId(response.entryId);
+        
+        // Set initial message from the session response
+        if (response.messages && response.messages.length > 0) {
+          const initialMessage = response.messages[0];
+          setMessages([{
+            sender: 'bot',
+            text: initialMessage.content
+          }]);
+        }
       } catch (error) {
         console.error('Failed to create session:', error);
-        // Handle error appropriately
+        const errorMessage = { 
+          sender: 'bot' as const, 
+          text: "I apologize, but I'm having trouble starting our session. Could you please try again?" 
+        };
+        setMessages([errorMessage]);
       }
     };
 
@@ -60,7 +72,11 @@ export default function ChatScreen() {
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       console.error('Failed to send message:', error);
-      // Handle error appropriately
+      const errorMessage = { 
+        sender: 'bot' as const, 
+        text: "I apologize, but I'm having trouble processing your message right now. Could you please try again?" 
+      };
+      setMessages(prev => [...prev, errorMessage]);
     }
   };
 
@@ -102,9 +118,9 @@ export default function ChatScreen() {
           />
     
           <TouchableOpacity 
-            style={[styles.sendButton, (isSendingMessage || !sessionId) && styles.sendButtonDisabled]} 
+            style={[styles.sendButton, (isSendingMessage || !sessionId || input.trim() === '') && styles.sendButtonDisabled]} 
             onPress={() => handleSendMessage(input)}
-            disabled={isSendingMessage || !sessionId}
+            disabled={isSendingMessage || !sessionId || input.trim() === ''}
           >
             {isSendingMessage ? (
               <ActivityIndicator color="white" />
@@ -138,6 +154,9 @@ const styles = StyleSheet.create({
     flex: 1,
     color: 'white',
     fontSize: 16,
+    paddingHorizontal: 10,
+    height: '100%',
+    fontFamily: 'Gotham-Medium',
   },
   sendButton: {
     backgroundColor: '#00B894',

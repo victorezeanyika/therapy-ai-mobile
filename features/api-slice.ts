@@ -21,7 +21,7 @@ export const apiSlice = createApi({
     // Handle 401 Unauthorized responses
     if (result.error?.status === 401) {
       // Clear token and redirect to login
-      await AsyncStorage.removeItem('accessToken');r
+      await AsyncStorage.removeItem('accessToken');
       // You might want to dispatch a logout action here
     }
     

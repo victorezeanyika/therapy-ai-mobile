@@ -2,6 +2,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
+import Markdown from 'react-native-markdown-display';
 
 interface MessageBubbleProps {
   message: { sender: string; text: string };
@@ -21,11 +22,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
           source={require('@/assets/images/you.png')} // 👈 We'll add a bot avatar here
           style={styles.avatar}
           />
-          <Text style={{
-             fontFamily:'Gotham-Bold',
-             fontWeight:'bold',
-             fontSize:14, 
-             color:'#fff'}} >You</Text>
+          <Text style={styles.senderName}>You</Text>
           </View>
       ) : (
         <View style={{flexDirection:'row', alignItems:'center'}}>
@@ -33,16 +30,27 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
           source={require('@/assets/images/serentis-ai.png')} // 👈 We'll add a bot avatar here
           style={styles.avatar}
           />
-          <Text style={{
-             fontFamily:'Gotham-Bold',
-             fontWeight:'bold',
-             fontSize:14, 
-             color:'#000'}}>Seretis</Text>
+          <Text style={styles.senderName}>Dr. Lukas</Text>
           </View>
       )}
-        <Text style={[styles.text, isUser ? styles.userText : styles.botText]}>
+        <Markdown
+          style={{
+            body: isUser ? styles.userText : styles.botText,
+            heading1: {
+              fontSize: 20,
+              fontWeight: 'bold',
+              marginTop:20,
+              marginBottom: 10,
+              color: isUser ? 'white' : '#000000',
+            },
+            paragraph: {
+              marginTop: 12,
+              marginBottom: 12,
+            }
+          }}
+        >
           {message.text}
-        </Text>
+        </Markdown>
       </View>
     </View>
   );
@@ -68,6 +76,12 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginRight: 8,
   },
+  senderName: {
+    fontFamily: 'Gotham-Bold',
+    fontWeight: 'bold',
+    fontSize: 14,
+    color: '#000',
+  },
   bubble: {
     maxWidth: '80%',
     paddingVertical: 10,
@@ -82,22 +96,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderBottomLeftRadius: 4,
   },
-  text: {
-    fontSize: 16,
-    lineHeight: 22,
-  },
   userText: {
     color: 'white',
-    fontFamily:'Gotham-Medium',
-    fontSize:12,
-    lineHeight:17,
-    marginTop:12,
+    fontFamily: 'Gotham-Medium',
+    fontSize: 12,
+    lineHeight: 17,
   },
   botText: {
     color: '#000000',
-    fontFamily:'Gotham-Medium',
-    fontSize:12,
-    lineHeight:17,
-    marginTop:12,
+    fontFamily: 'Gotham-Medium',
+    fontSize: 12,
+    lineHeight: 17,
   },
 });

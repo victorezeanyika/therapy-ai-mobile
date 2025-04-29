@@ -12,6 +12,7 @@ import { Feather } from '@expo/vector-icons';
 import { useSubmitUserPreferencesMutation } from '@/features/auth-api';
 import { useToast } from '@/context/toast-context';
 import { router } from 'expo-router';
+import { useAppSelector } from '@/features/hooks';
 
 const steps = [
   {
@@ -53,7 +54,7 @@ export default function AssessmentScreen({ navigation }: any) {
   const btnBg = useThemeColor({light:'#FFFFFF', dark:'#232627'}, 'button')
   const [submitUserPreference, {isLoading:isSubmitting}] = useSubmitUserPreferencesMutation();
   const { success, error:toastError, info } = useToast();
-
+  const { user } = useAppSelector(state => state.auth);
 
   const { control, handleSubmit, getValues, watch } = useForm<PreferencesForm>({
     resolver: zodResolver(PreferencesSchema),
@@ -74,7 +75,7 @@ export default function AssessmentScreen({ navigation }: any) {
     } else {
       const preferences = getValues();
       console.log({ preferences });
-      router.push('/(tabs)/explore'); // Or show confirmation screen
+      router.push('/(auth)'); // Or show confirmation screen
       // try {
       //   const res = await submitUserPreference(preferences).unwrap()
       //   success("works")

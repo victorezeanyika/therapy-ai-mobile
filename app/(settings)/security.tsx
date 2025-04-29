@@ -1,38 +1,30 @@
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import TopHeader from "@/components/TopHeader";
-import { View,  TouchableOpacity } from "react-native";
-import {  MaterialIcons } from "@expo/vector-icons";
+import { Colors } from "@/constants/Colors";
+import { View, SafeAreaView, TouchableOpacity } from "react-native";
+import { Feather, MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { router } from "expo-router";
 
 const settingData = [
   {
-    title: "Personal Infomation",
-    sub: "Edit your personal info",
-    link: "/(settings)/personalinfo",
+    title: "Update your password",
+    sub: "Set a new password",
+    link: "/(settings)/updatepassword",
   },
-  {
-    title: "Payment Methods",
-    sub: "Manage all of your payment methods",
-    link: "(settings)/paymentmethods",
-  },
-  {
-    title: "Delete My Account",
-    sub: "Delete my Serentis account",
-    link: "(settings)/delete",
-    red:true,
-  },
+
 ];
 
-export default function AccountInfo() {
+export default function SecurityAndData() {
 
   return (
       <ThemedView style={{
         height:'100%',
         marginTop:20,
       }}>
-        <TopHeader title="Account Info" />
+        <TopHeader title="Security & Data" />
         <View style={{ padding: 20, gap: 15 }}>
           {settingData.map((item) => (
             <SettingCard

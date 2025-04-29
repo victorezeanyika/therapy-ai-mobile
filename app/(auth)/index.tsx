@@ -19,6 +19,7 @@ import Animated, {
 } from "react-native-reanimated";
 import LoginForm from "@/components/LoginForm";
 import SignupForm from "@/components/SignupForm";
+import { useAuthCheck } from "@/features/auth-hooks";
 
 const { width } = Dimensions.get('window');
 
@@ -26,6 +27,8 @@ export default function Auth() {
   const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
   const scrollX = useSharedValue(0);
   const scrollViewRef = useRef<Animated.ScrollView>(null);
+
+  useAuthCheck();
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {

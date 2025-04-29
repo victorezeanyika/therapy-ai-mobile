@@ -1,6 +1,12 @@
 import { IUser } from "@/types";
 import apiSlice from "./api-slice";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
+interface Preferences {
+  notifications: boolean;
+  theme: 'light' | 'dark';
+  language: string;
+  reminderFrequency: 'daily' | 'weekly' | 'monthly';
+}
 
 interface LoginRequest {
   email: string;
@@ -24,31 +30,12 @@ export const authApi = apiSlice.injectEndpoints({
         method: 'POST',
         body: credentials,
       }),
-      async onQueryStarted(_, { queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-          // Store the token
-          await AsyncStorage.setItem('accessToken', data.accessToken);
-        } catch (error) {
-          // Handle error if needed
-          console.error('Login failed:', error);
-        }
-      },
     }),
     logout: builder.mutation<void, void>({
       query: () => ({
         url: 'auth/logout',
         method: 'POST',
       }),
-      async onQueryStarted(_, { queryFulfilled }) {
-        try {
-          await queryFulfilled;
-          // Clear the token
-          await AsyncStorage.removeItem('accessToken');
-        } catch (error) {
-          console.error('Logout failed:', error);
-        }
-      },
     }),
     register: builder.mutation({
       query: (newUser) => ({
@@ -64,10 +51,11 @@ export const authApi = apiSlice.injectEndpoints({
     getProfile:builder.query<any, void>({
       query:() =>  `/users/profile`
     }),
-    updateProfile:builder.mutation<any, void>({
-      query: (email) => ({
+    updateProfile:builder.mutation<any, {payload:any}>({
+      query: ({payload}) => ({
         url: '/users/profile',
         method: 'PUT',
+        body: payload,
       }),
     }),
     verifyEmail: builder.mutation({
@@ -108,7 +96,7 @@ export const authApi = apiSlice.injectEndpoints({
       query: (preferences) => ({
         url: '/auth/users/preferences',
         method: 'POST',
-        body: { preferences },
+        body: preferences,
       }),
     }),
   }),

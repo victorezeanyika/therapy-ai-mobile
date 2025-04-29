@@ -5,6 +5,10 @@ export const chatApi = apiSlice.injectEndpoints({
         getChat: builder.query<any, void>({
             query: () => '/chat',
         }),
+        getAllSessions: builder.query<any, void>({
+            query: () => '/chat/sessions',
+            
+        }),
         createSession: builder.mutation<any, void>({
             query: () => ({
                 url: '/chat/session',
@@ -25,6 +29,7 @@ export const {
     useGetChatQuery,
     useCreateSessionMutation,
     useSendMessageMutation,
+    useGetAllSessionsQuery,
  } = chatApi;
 
 export default chatApi;

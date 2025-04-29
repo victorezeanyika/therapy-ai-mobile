@@ -8,9 +8,11 @@ import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
 
 import RNPickerSelect from 'react-native-picker-select';
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 
 const RenderField = ({field, props}:{field:any, props:any}) => {
+  const inputText = useThemeColor({light:'#000000', dark:'#FFFFFF'}, 'button')
     switch (props.fieldType) {
         case 'input':
             const [showPass, setShowPass] = useState(false);
@@ -38,12 +40,13 @@ const RenderField = ({field, props}:{field:any, props:any}) => {
                     <TextInput 
                         style={{
                             flex: 1,
-                            fontFamily: 'Gotham-Book',
+                            fontFamily: 'Gotham-Bold',
+                            fontWeight:'bold',
                             width: '100%',
                             fontSize: 14,
                             height: '100%',
                             padding: 10,
-                            color:Colors.harmony.light
+                            color:inputText
                         }}
                         keyboardType={props.keyboardType}
                         value={field.value}

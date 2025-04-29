@@ -6,17 +6,16 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import CustomFormField from "@/components/CustomFormField";
 import { Image } from "expo-image";
-import { useGetProfileQuery, useUpdateProfileMutation } from "@/features/auth-api";
+import { useUpdateProfileMutation } from "@/features/auth-api";
 import { useEffect, useState } from "react";
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { ThemedText } from "@/components/ThemedText";
 import { Colors } from "@/constants/Colors";
 import { Feather } from "@expo/vector-icons";
-
+import { useAppSelector } from "@/features/hooks";
 const personalInfoSchema = z.object({
-  firstName: z.string().min(2, { message: "First Name is required" }),
-  lastName: z.string().min(2, { message: "Last Name is required" }),
+  name: z.string().min(2, { message: "Full Name is required" }),
   email: z.string().email({ message: "Invalid email address" }),
   gender: z.string().optional(),
   dateOfBirth: z.string().optional(),
@@ -26,9 +25,10 @@ const personalInfoSchema = z.object({
 type ProfileFormData = z.infer<typeof personalInfoSchema>;
 
 export default function PersonalInfo() {
-  const { data: userDetails } = useGetProfileQuery();
+  const {user:userDetails} = useAppSelector(state => state.auth);
   const [updateProfile, { isLoading: isUpdate }] = useUpdateProfileMutation();
   const [showDatePicker, setShowDatePicker] = useState(false);
+  console.log(userDetails, 'this is the user details');
 
   const {
     control,
@@ -40,8 +40,7 @@ export default function PersonalInfo() {
   } = useForm<ProfileFormData>({
     resolver: zodResolver(personalInfoSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
+      name: "",
       email: "",
       gender: "",
       dateOfBirth: "",
@@ -53,12 +52,11 @@ export default function PersonalInfo() {
   useEffect(() => {
     if (userDetails) {
       reset({
-        firstName: userDetails?.firstName || "",
-        lastName: userDetails?.lastName || "",
+        name: userDetails?.name || "",
         email: userDetails?.email || "",
         gender: userDetails?.gender || "",
-        dateOfBirth: userDetails?.dateOfBirth || "",
-        profileImage: userDetails?.profileImage || "",
+        dateOfBirth: userDetails?.birthday || "",
+        profileImage: userDetails?.avatar || "",
       });
     }
   }, [userDetails, reset]);
@@ -135,23 +133,12 @@ export default function PersonalInfo() {
         >
           <Text style={{ color: 'white', fontFamily: 'Gotham-Book' }}>Change Photo</Text>
         </TouchableOpacity>
-
-        {/* Form Fields */}
         <CustomFormField
-          name="firstName"
-          label="First Name"
-          placeholder="Enter your First Name"
+          name="name"
+          label="Full Name"
+          placeholder="Enter your Full Name"
           control={control}
-          errors={errors.firstName}
-          fieldType="input"
-          icon="user"
-        />
-        <CustomFormField
-          name="lastName"
-          label="Last Name"
-          placeholder="Enter your Last Name"
-          control={control}
-          errors={errors.lastName}
+          errors={errors.name}
           fieldType="input"
           icon="user"
         />
@@ -172,6 +159,7 @@ export default function PersonalInfo() {
           placeholder="Select gender"
           icon="users"
           options={[
+            { label: "Select gender", value: "" },
             { label: "Male", value: "male" },
             { label: "Female", value: "female" },
             { label: "Other", value: "other" },
@@ -236,7 +224,7 @@ export default function PersonalInfo() {
         {/* Submit Button */}
         <TouchableOpacity
           onPress={handleSubmit((data: ProfileFormData) => {
-            updateProfile(data);
+            updateProfile({payload:data});
           })}
           style={{
             backgroundColor: Colors.harmony.primary,

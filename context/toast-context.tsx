@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState } from 'react';
-import { Animated, Easing, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Haptic } from 'expo-haptics';
+import { Animated, Easing, View, TouchableOpacity, StyleSheet } from 'react-native';
+import * as Haptic from 'expo-haptics';
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { Ionicons } from '@expo/vector-icons';
+import { ThemedText } from '@/components/ThemedText';
 
-// Toast types
 type ToastType = 'success' | 'error' | 'info';
 
 interface ToastContextProps {
@@ -30,16 +31,15 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
   const [fadeAnim] = useState(new Animated.Value(0));
 
-  const bgColor = useThemeColor({ light: '#4CAF50', dark: '#2C6B2F' }, 'background'); // Success color
-  const errorBgColor = useThemeColor({ light: '#F44336', dark: '#D32F2F' }, 'background'); // Error color
-  const infoBgColor = useThemeColor({ light: '#2196F3', dark: '#1976D2' }, 'background'); // Info color
+  const bgColor = useThemeColor({ light: '#4CAF50', dark: '#2C6B2F' }, 'background');
+  const errorBgColor = useThemeColor({ light: '#F44336', dark: '#D32F2F' }, 'background');
+  const infoBgColor = useThemeColor({ light: '#2196F3', dark: '#1976D2' }, 'background');
 
   const toastBgColor = toast?.type === 'success' ? bgColor : toast?.type === 'error' ? errorBgColor : infoBgColor;
 
   const showToast = (message: string, type: ToastType) => {
     setToast({ message, type });
 
-    // Haptic feedback
     if (type === 'error') {
       Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Heavy);
     } else if (type === 'success') {
@@ -48,23 +48,21 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
       Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Light);
     }
 
-    // Animate toast in
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 500,
-      easing: Easing.ease,
+      easing: Easing.out(Easing.ease),
       useNativeDriver: true,
     }).start();
 
-    // Hide toast after 3 seconds
     setTimeout(() => {
       Animated.timing(fadeAnim, {
         toValue: 0,
         duration: 500,
-        easing: Easing.ease,
+        easing: Easing.in(Easing.ease),
         useNativeDriver: true,
       }).start();
-      setTimeout(() => setToast(null), 500); // Remove toast after fade-out
+      setTimeout(() => setToast(null), 500);
     }, 3000);
   };
 
@@ -81,12 +79,15 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
         <Animated.View
           style={[
             styles.toastContainer,
-            { backgroundColor: toastBgColor, opacity: fadeAnim },
+            { backgroundColor: toastBgColor, opacity: fadeAnim, transform: [{ translateY: fadeAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [-100, 50], // Animate from above screen to a fixed top position
+            }) }] },
           ]}
         >
-          <Text style={styles.toastText}>{toast.message}</Text>
+          <ThemedText style={styles.toastText}>{toast.message}</ThemedText>
           <TouchableOpacity style={styles.closeButton} onPress={() => setToast(null)}>
-            <Text style={styles.closeText}>X</Text>
+            <Ionicons name="close" size={18} color="white" />
           </TouchableOpacity>
         </Animated.View>
       )}
@@ -97,31 +98,33 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
 const styles = StyleSheet.create({
   toastContainer: {
     position: 'absolute',
-    bottom: 50,
+    top: 50, // top not bottom
     left: 20,
     right: 20,
-    borderRadius: 8,
-    padding: 16,
+    borderRadius: 12,
+    padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
+    zIndex: 9999, // Always stay on top
   },
   toastText: {
     color: '#fff',
     fontSize: 16,
     flex: 1,
-    textAlign: 'left',
+    marginRight: 10,
   },
   closeButton: {
-    paddingLeft: 10,
-  },
-  closeText: {
-    color: '#fff',
-    fontSize: 18,
+    borderWidth: 1,
+    borderColor: 'white',
+    borderRadius: 999,
+    padding: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

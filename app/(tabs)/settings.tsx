@@ -18,19 +18,19 @@ const settingData = [
     title: "Security & Data",
     sub: "Manage all of your personal information",
     icon: <MaterialIcons name="security" size={20} color="white" />,
-    link: "SecuritySettings",
+    link: "/(settings)/security",
   },
   {
     title: "App Theme",
     sub: "Swap the app theme to dark mode",
     icon: <Ionicons name="moon" size={20} color="white" />,
-    link: "AppTheme",
+    link: "/(settings)/app-theme",
   },
   {
     title: "Log out",
     sub: "Log out of this device",
     icon: <MaterialIcons name="logout" size={20} color="white" />,
-    link: "Logout",
+    link: "Logout", 
   },
 ];
 

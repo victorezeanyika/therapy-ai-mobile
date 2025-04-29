@@ -9,9 +9,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
 import { useLoginMutation } from '@/features/auth-api';
+import { useToast } from '@/context/toast-context';
 // import { useLoginMutation } from '@/store/api/authApi';
 
 export default function LoginForm() {
+  const {success, error:toastError} = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [login, {isLoading}] = useLoginMutation();
@@ -35,14 +37,13 @@ export default function LoginForm() {
   const onSubmit = async (data: z.infer<typeof userLoginSchema>) => {
     try {
       const result = await login(data).unwrap();
-      Alert.alert('Success', 'Login successful');
-      router.push({ pathname: '/(auth)/verify-otp', params: { email: data.email } });
+      success('Login successful');
+      router.replace({ pathname: '/(auth)/verify-otp', params: { email: data.email } });
     } catch (error: any) {
-      Alert.alert(
-        error?.data?.message ||
-          error?.data?.error ||
-          error?.message ||
-          'An error occurred'
+      toastError(error?.data?.message ||
+        error?.data?.error ||
+        error?.message ||
+        'An error occurred'
       );
     }
   };
