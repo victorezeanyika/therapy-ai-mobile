@@ -3,7 +3,7 @@ import { FlatList, View, Image } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedView } from "../ThemedView";
-
+import { useGetActivitiesQuery } from "@/features/journal-api";
 const data = [
   {
     id: "1",
@@ -29,8 +29,9 @@ const data = [
 ];
 
 export default function Recents() {
+  const { data: activities, isLoading, error } = useGetActivitiesQuery();
   const iconColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'icon');
-
+  console.log(activities);
   return (
     <View style={{ flex: 1, paddingHorizontal: 30 }}>
       {/* Top Header */}

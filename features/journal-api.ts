@@ -2,17 +2,21 @@
 
 import { apiSlice } from "./api-slice";
 
-interface JournalEntry {
+export interface JournalEntry {
+    entryId?: string | undefined;
     title: string;
     content: string;
     tags: string[];
-    
+    createdAt?: string;
 }
 
 export const journalApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getJournalEntries: builder.query<JournalEntry[], void>({
             query: () => '/journal',
+        }),
+        getActivities: builder.query<JournalEntry[], void>({
+            query: () => '/activities/recommended',
         }),
         getDashboard: builder.query<JournalEntry[], void>({
             query: () => '/dashboard',
@@ -24,19 +28,19 @@ export const journalApi = apiSlice.injectEndpoints({
                 body: entry,
             }),
         }),
-        updateJournalEntry: builder.mutation<JournalEntry, JournalEntry>({
-            query: ({ id, ...rest }) => ({
-                url: `/journal/${id}`,
+        updateJournalEntry: builder.mutation<JournalEntry, { entryId: string; entry: JournalEntry }>({
+            query: ({ entryId, entry }) => ({
+                url: `/journal/${entryId}`,
                 method: 'PUT',
-                body: rest,
+                body: entry,
             }),
         }),
-        deleteJournalEntry: builder.mutation<void, number>({
-            query: (id) => ({
-                url: `/journal/${id}`,
+        deleteJournalEntry: builder.mutation<void, string>({
+            query: (entryId) => ({
+                url: `/journal/${entryId}`,
                 method: 'DELETE',
             }),
-            }),
+        }),
     }),
 });
 
@@ -46,4 +50,5 @@ export const {
      useUpdateJournalEntryMutation, 
      useDeleteJournalEntryMutation,
      useGetDashboardQuery,
+     useGetActivitiesQuery,
     } = journalApi;

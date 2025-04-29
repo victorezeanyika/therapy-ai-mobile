@@ -1,38 +1,40 @@
-import { Colors } from '@/constants/Colors';
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
+import { ThemedText } from '@/components/ThemedText';
+import { Colors } from '@/constants/Colors';
 
 interface AddEntryButtonProps {
   onPress: () => void;
-  loading: boolean; // Added loading prop
+  loading: boolean;
+  title?: string;
 }
 
-const AddEntryButton = ({ onPress, loading }: AddEntryButtonProps) => {
+export default function AddEntryButton({ onPress, loading, title = 'Add Entry' }: AddEntryButtonProps) {
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress} disabled={loading}>
-      {loading ? (
-        <ActivityIndicator size="small" color="#FFF" /> // Displaying spinner when loading is true
-      ) : (
-        <Text style={styles.buttonText}>+ Add Entry</Text> // Display text when not loading
-      )}
+    <TouchableOpacity
+      style={[styles.button, loading && { opacity: 0.5 }]}
+      onPress={onPress}
+      disabled={loading}
+    >
+      <ThemedText style={styles.buttonText}>
+        {loading ? 'Saving...' : title}
+      </ThemedText>
     </TouchableOpacity>
   );
-};
+}
 
 const styles = StyleSheet.create({
   button: {
     backgroundColor: Colors.harmony.primary,
-    padding: 16,
-    borderRadius: 8,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
     alignItems: 'center',
-    width: 128,
-    marginTop: 10,
+    marginTop: 20,
   },
   buttonText: {
-    color: '#FFF',
+    color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
 });
-
-export default AddEntryButton;

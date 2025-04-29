@@ -99,6 +99,13 @@ export const authApi = apiSlice.injectEndpoints({
         body: preferences,
       }),
     }),
+    googleAuth: builder.mutation<LoginResponse, { token: string }>({
+      query: (credentials) => ({
+        url: 'auth/google',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
   }),
 });
 
@@ -114,4 +121,5 @@ export const {
   useSubmitUserPreferencesMutation,
   useGetProfileQuery,
   useUpdateProfileMutation,
+  useGoogleAuthMutation,
  } = authApi;

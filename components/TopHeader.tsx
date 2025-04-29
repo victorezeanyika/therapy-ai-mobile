@@ -10,6 +10,7 @@ export default function TopHeader({title}:{title:string}){
             alignItems:'center',
             flexDirection:'row',
             paddingTop:32,
+            paddingBottom:10,
             paddingHorizontal:20,
         }}>
             <BackButton />

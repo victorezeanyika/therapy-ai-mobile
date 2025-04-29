@@ -1,36 +1,39 @@
 import React from 'react';
-import { FlatList, View } from 'react-native';
-import JournalEntryCard from './journalentry';
-import { ThemedView } from '@/components/ThemedView';
+import { View, StyleSheet } from 'react-native';
+import JournalEntry from './journalentry';
+import { JournalEntry as JournalEntryType } from '@/features/journal-api';
 import { ThemedText } from '@/components/ThemedText';
 
 interface JournalListProps {
-  journals: { title: string; date: string; content: string }[];
+  journals: JournalEntryType[];
+  onEdit: (entry: JournalEntryType) => void;
 }
 
-const JournalList = ({ journals }: JournalListProps) => {
+export default function JournalList({ journals, onEdit }: JournalListProps) {
+  console.log(journals, 'this are');
   return (
-    <ThemedView style={{flex:1 , marginTop: 30}}>
+    <View style={styles.container}>
       <View>
-        <ThemedText
-        type='defaultSemiBold'
-        >Previous Entries</ThemedText>
-    <FlatList
-      data={journals}
-      keyExtractor={(_, index) => index.toString()}
-      renderItem={({ item }) => (
-        <JournalEntryCard 
-        title={item.title} 
-        date={item.date} 
-        content={item.content}
-        tags={item.tags}
-         />
-      )}
-      />
+        <ThemedText type="defaultSemiBold">Previous Entries</ThemedText>
       </View>
-
-    </ThemedView>
+      {journals.map((journal) => (
+        <JournalEntry
+          key={journal.entryId}
+          entryId={journal.entryId}
+          title={journal.title}
+          content={journal.content}
+          date={journal.createdAt || new Date().toISOString()}
+          tags={journal.tags || []}
+          onEdit={onEdit}
+        />
+      ))}
+    </View>
   );
-};
+}
 
-export default JournalList;
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 30,
+    gap: 10,
+  },
+});

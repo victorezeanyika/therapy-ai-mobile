@@ -1,4 +1,5 @@
 import { ThemedView } from '@/components/ThemedView';
+import { useThemeColor } from '@/hooks/useThemeColor';
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 
@@ -8,6 +9,8 @@ interface JournalTextAreaProps {
 }
 
 const JournalTextArea = ({ value, onChangeText }: JournalTextAreaProps) => {
+  const inputText = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'text');
+
   return (
     <ThemedView 
     darkColor='#232627'
@@ -17,7 +20,7 @@ const JournalTextArea = ({ value, onChangeText }: JournalTextAreaProps) => {
         placeholder="Write about your thought and feelings……"
         value={value}
         onChangeText={onChangeText}
-        style={styles.textArea}
+        style={[styles.textArea, { color: inputText }]}
         multiline
       />
     </ThemedView>

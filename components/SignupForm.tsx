@@ -12,6 +12,7 @@ import { Colors } from '@/constants/Colors';
 import CustomFormField from './CustomFormField';
 import { useRegisterMutation } from '@/features/auth-api';
 import { useToast } from '@/context/toast-context';
+import { useGoogleSignIn } from '@/utils/google-auth';
 
 const userSignupSchema = z.object({
   name: z.string().min(2, { message: "Full Name is required" }),
@@ -27,8 +28,9 @@ const userSignupSchema = z.object({
 
 
 export default function SignupForm() {
-  const {sucess, error:toastError} = useToast();
+  const {success, error:toastError} = useToast();
   const [register, {isLoading}] = useRegisterMutation();
+  const { handleGoogleSignIn, isGoogleSignInReady } = useGoogleSignIn();
   const {
     control,
     handleSubmit,
@@ -43,7 +45,7 @@ export default function SignupForm() {
       console.log(data, 'datasd')
       const user = await register({ name, email, password }).unwrap();
       await AsyncStorage.setItem('user', JSON.stringify(user));
-      sucess("Signup successful");
+      success("Signup successful");
       router.push("/(auth)/assessment");
     } catch (error: any) {
       toastError(error?.response?.data?.message || error.message || "Something went wrong");
@@ -107,7 +109,11 @@ export default function SignupForm() {
       </View>
 
       <View style={styles.socialButtonsContainer}>
-        <TouchableOpacity style={styles.socialButton}>
+        <TouchableOpacity 
+          style={styles.socialButton}
+          onPress={handleGoogleSignIn}
+          disabled={!isGoogleSignInReady}
+        >
           <Ionicons name="logo-google" size={24} color="#666" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.socialButton}>

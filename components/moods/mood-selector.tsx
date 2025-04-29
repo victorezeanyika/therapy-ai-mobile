@@ -3,10 +3,10 @@ import { ThemedText } from "../ThemedText";
 
 const MoodSelector = ({ moods }: { moods: any[] }) => (
   <View style={styles.moodSelector}>
-    {moods.map((mood) => (
+    {moods.map((mood, id) => (
       <View style={{flexDirection:'row', alignItems:'center', gap:10}}>
       <View
-        key={mood.name}
+        key={id}
         style={[
           styles.moodButton,
           { backgroundColor: mood.color }

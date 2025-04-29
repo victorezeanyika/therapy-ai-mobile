@@ -10,11 +10,13 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
+import { useRouter } from 'expo-router';
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function WelcomeScreen() {
   const navigation = useNavigation();
+  const router = useRouter();
   const [quote, setQuote] = useState('');
   const [inputText, setInputText] = useState('');
   const [menuVisible, setMenuVisible] = useState(false);
@@ -43,11 +45,7 @@ export default function WelcomeScreen() {
     }).start(() => setMenuVisible(!menuVisible));
   };
 
-  const dummyConversations = [
-    { id: '1', name: 'My First Chat' },
-    { id: '2', name: 'Stress Therapy' },
-    { id: '3', name: 'Anxiety Tips' },
-  ];
+
 
   return (
     <KeyboardAvoidingView 
@@ -56,7 +54,7 @@ export default function WelcomeScreen() {
       keyboardVerticalOffset={80}
     >
       {/* Sidebar */}
-      <Animated.View style={[styles.sidebar, { left: sidebarAnim }]}>
+      {/* <Animated.View style={[styles.sidebar, { left: sidebarAnim }]}>
       <TouchableOpacity onPress={toggleMenu} style={styles.closeIcon}>
         <MaterialIcons name="close" size={28} color={Colors.harmony.primary} />
       </TouchableOpacity>
@@ -66,14 +64,30 @@ export default function WelcomeScreen() {
           <ThemedText style={styles.convoText}>{conv.name}</ThemedText>
         </TouchableOpacity>
       ))}
-    </Animated.View>
-
+    </Animated.View> */}
+    <View style={styles.container}>
+      
 
       <ThemedView style={styles.container}>
         {/* Menu Icon */}
-        <TouchableOpacity style={styles.menuIcon} onPress={toggleMenu}>
+        {/* <TouchableOpacity style={styles.menuIcon} onPress={toggleMenu}>
           <MaterialIcons name="menu" size={28} color={Colors.harmony.primary} />
+        </TouchableOpacity> */}
+        <View style={styles.linksContainer}>
+        <TouchableOpacity 
+          style={styles.linkItem}
+          onPress={() => router.push('/conversations')}
+        >
+          <ThemedText style={styles.linkText}>My Conversations</ThemedText>
         </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.linkItem}
+          onPress={() => router.push('/activities')}
+        >
+          <ThemedText style={styles.linkText}>My Activities</ThemedText>
+        </TouchableOpacity>
+      </View>
 
         <Image
           source={require('../../assets/images/frame1.png')}
@@ -110,6 +124,7 @@ export default function WelcomeScreen() {
           contentContainerStyle={styles.featuresList}
         />
       </ThemedView>
+    </View>
     </KeyboardAvoidingView>
   );
 }
@@ -117,16 +132,34 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 26,
-    justifyContent: 'flex-end',
-    gap: 40,
+    padding: 20,
+    gap: 20,
+    justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
+  },
+  linksContainer: {
+    gap: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 10,
+
+  },
+  linkItem: {
+    paddingTop: 15,
+    borderRadius: 12,
+  },
+  linkText: {
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: 'Gotham-Medium',
   },
   image: {
     maxWidth: 224,
     maxHeight: 224,
     height: 300,
-    marginTop: '30%',
+    marginTop: '20%',
   },
   title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10, textAlign: 'center' },
   subtitle: { fontSize: 16, color: 'gray', textAlign: 'center', marginBottom: 20 },
@@ -138,6 +171,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderColor: '#E0E0E0',
     borderRadius: 10,
+    marginTop: 20,
   },
   input: {
     padding: 10,

@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
 import { useLoginMutation } from '@/features/auth-api';
 import { useToast } from '@/context/toast-context';
+import { useGoogleSignIn } from '@/utils/google-auth';
 // import { useLoginMutation } from '@/store/api/authApi';
 
 export default function LoginForm() {
@@ -17,6 +18,7 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [login, {isLoading}] = useLoginMutation();
+  const { handleGoogleSignIn, isGoogleSignInReady } = useGoogleSignIn();
 
   const userLoginSchema = z.object({
     email: z
@@ -111,7 +113,11 @@ export default function LoginForm() {
       </View>
 
       <View style={styles.socialButtonsContainer}>
-        <TouchableOpacity style={styles.socialButton}>
+        <TouchableOpacity 
+          style={styles.socialButton}
+          onPress={handleGoogleSignIn}
+          disabled={!isGoogleSignInReady}
+        >
           <Ionicons name="logo-google" size={24} color="#666" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.socialButton}>

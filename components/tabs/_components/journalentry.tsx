@@ -1,99 +1,152 @@
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { Colors } from '@/constants/Colors';
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { ThemedText } from '@/components/ThemedText';
 import { Feather } from '@expo/vector-icons';
-import { useThemeColor } from '@/hooks/useThemeColor';
-
-interface JournalEntryCardProps {
+import { useDeleteJournalEntryMutation, useGetJournalEntriesQuery } from '@/features/journal-api';
+import { useToast } from '@/context/toast-context';
+import { JournalEntry as JournalEntryType } from '@/features/journal-api';
+import { formatDate } from '@/utils/date-formatter';
+import { ThemedView } from '@/components/ThemedView';
+interface JournalEntryProps {
   title: string;
-  date: string;
   content: string;
+  date: string;
+  entryId: string | undefined;
   tags: string[];
+  onEdit: (entry: JournalEntryType) => void;
 }
 
-const JournalEntryCard = ({ title, date, content, tags }: JournalEntryCardProps) => {
-  const iconColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'icon');
+export default function JournalEntry({ title, content, date, entryId, tags, onEdit }: JournalEntryProps) {
+  const [deleteJournal] = useDeleteJournalEntryMutation();
+  const { refetch } = useGetJournalEntriesQuery();
+  const { success, error: toastError } = useToast();
+  const iconColor = '#666';
+
+  const handleDelete = () => {
+    Alert.alert(
+      'Delete Journal Entry',
+      'Are you sure you want to delete this entry?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteJournal(entryId).unwrap();
+              await refetch();
+              success('Journal entry deleted successfully');
+            } catch (error) {
+              toastError('Failed to delete journal entry');
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const handleEdit = () => {
+    onEdit({ entryId, title, content, tags, createdAt: date });
+  };
+
   return (
-    <ThemedView darkColor="#232627" lightColor="#FFFFFF" style={styles.card}>
+    <ThemedView
+    lightColor="#FFFFFF"
+    darkColor="#232627"
+    style={styles.container}>
       <View style={styles.header}>
-        <View>
-          <ThemedText style={styles.title}>{title}</ThemedText>
-          <ThemedText style={styles.date}>{date}</ThemedText>
-        </View>
-        <View style={styles.iconContainer}>
-          {/* edit and delete button */}
-          <TouchableOpacity>
-            <Feather name="trash" size={12} color={iconColor} />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Feather name="edit" size={12} color={iconColor} />
-          </TouchableOpacity>
-        </View>
+        <ThemedText type="defaultSemiBold" style={styles.title}>
+          {title}
+        </ThemedText>
+        <ThemedText style={styles.date}>{formatDate(date)}</ThemedText>
       </View>
-
-      <ThemedText numberOfLines={3} style={styles.content}>
-        {content}
-      </ThemedText>
-
-      <ThemedView style={styles.tagsContainer}>
+      <ThemedText type="subtitle" style={styles.content}>{content}</ThemedText>
+      <View style={styles.tagsContainer}>
         {tags.map((tag, index) => (
-          <ThemedText key={index} style={styles.tag}>
-            {tag}
-          </ThemedText>
+          <View key={index} style={styles.tag}>
+            <ThemedText style={styles.tagText}>{tag}</ThemedText>
+          </View>
         ))}
-      </ThemedView>
+      </View>
+      <View style={styles.iconContainer}>
+        <TouchableOpacity 
+          style={styles.iconButton} 
+          onPress={handleEdit}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Feather name="edit" size={20} color={iconColor} />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.iconButton} 
+          onPress={handleDelete}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Feather name="trash" size={20} color={iconColor} />
+        </TouchableOpacity>
+      </View>
     </ThemedView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  card: {
+  container: {
+    borderRadius: 12,
     padding: 16,
-    height: 163,
-    marginVertical: 8,
-    borderRadius: 15,
-    borderRightColor: Colors.harmony.primary,
-    borderRightWidth: 4,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    marginBottom: 8,
   },
   title: {
-    fontSize: 12,
-    fontWeight: 'medium',
+    fontSize: 18,
+    fontWeight: 'bold',
+    flex: 1,
   },
   date: {
-    fontSize: 11,
-    color: '#777',
+    fontSize: 14,
+    color: '#666',
   },
   content: {
-    fontSize: 14,
-    marginTop: 17,
-  },
-  iconContainer: {
-    flexDirection: 'row',
-    gap: 10,
+    fontSize: 16,
+    lineHeight: 24,
   },
   tagsContainer: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 10,
-    flexWrap: 'wrap', // Ensures tags wrap onto the next line if necessary
+    flexWrap: 'wrap',
+    marginTop: 8,
+    gap: 8,
   },
   tag: {
-    backgroundColor: Colors.harmony.secondary, // Adjust as needed
-    color: '#fff', // White text color for the tags
-    paddingVertical: 6,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 12,
     paddingHorizontal: 12,
-    borderRadius: 12, // Makes the tags pill-shaped
-    fontSize: 10, // Small font size for tags
-    overflow: 'hidden',
-    textAlign: 'center', // Center-align text within the tag
+    paddingVertical: 6,
+  },
+  tagText: {
+    fontSize: 12,
+    color: '#666',
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 12,
+    gap: 16,
+  },
+  iconButton: {
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: '#f5f5f5',
   },
 });
-
-export default JournalEntryCard;

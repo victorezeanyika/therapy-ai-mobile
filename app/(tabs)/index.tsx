@@ -17,9 +17,7 @@ import UpcommingSession from '@/components/upcoming-session';
 export default function HomeScreen() {
 
   const { user } = useAppSelector(state => state.auth);
-  console.log(user, 'this is the user');
   const { data: dashboardData } = useGetDashboardQuery();
-  console.log(dashboardData, 'this is the dashboard data');
   const weekDays = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
   const goals = [
     {
@@ -71,9 +69,12 @@ export default function HomeScreen() {
         </ThemedView>
 
         {/* Monthly Goals */}
-        <View style={styles.card}>
+        <ThemedView 
+        lightColor="#FFFFFF"
+        darkColor="#232627"
+        style={styles.card}>
           <View style={styles.goalHeader}>
-            <Text style={styles.cardTitle}>Monthly Goals</Text>
+            <ThemedText style={styles.cardTitle}>Monthly Goals</ThemedText>
             <TouchableOpacity style={styles.addButton}>
               <Feather name="plus" size={20} color="#2a9d8f" />
             </TouchableOpacity>
@@ -82,8 +83,8 @@ export default function HomeScreen() {
           {goals.map((goal) => (
             <View key={goal.id} style={styles.goalItem}>
               <View style={styles.goalText}>
-                <Text style={styles.goalTitle}>{goal.title}</Text>
-                <Text style={styles.goalSubtitle}>{goal.subtitle}</Text>
+                <ThemedText style={styles.goalTitle}>{goal.title}</ThemedText>
+                <ThemedText style={styles.goalSubtitle}>{goal.subtitle}</ThemedText>
               </View>
               <TouchableOpacity 
                 style={[
@@ -97,10 +98,10 @@ export default function HomeScreen() {
           ))}
 
           <View style={styles.progressSection}>
-            <Text style={styles.progressTitle}>Progress</Text>
+            <ThemedText style={styles.progressTitle}>Progress</ThemedText>
             <View style={styles.progressRow}>
-              <Text style={styles.progressText}>Mindfulness Sessions Attended</Text>
-              <Text style={styles.progressPercent}>60%</Text>
+              <ThemedText style={styles.progressText}>Mindfulness Sessions Attended</ThemedText>
+              <ThemedText style={styles.progressPercent}>60%</ThemedText>
             </View>
             <Progress.Bar 
               progress={0.6} 
@@ -112,7 +113,7 @@ export default function HomeScreen() {
               style={styles.progressBar}
             />
           </View>
-        </View>
+        </ThemedView>
       </ScrollView>
       </ThemedView>
   );
@@ -136,6 +137,8 @@ const styles = StyleSheet.create({
     // shadowOpacity: 0.1,
     // shadowRadius: 6,
     // elevation: 2,
+    width: '100%',
+    padding: 14,
   },
   cardTitle: {
     fontSize: 12,
