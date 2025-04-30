@@ -97,7 +97,7 @@ export default function WelcomeScreen() {
         >
           <CustomButton 
            title='Get Started'
-           onPress={() => router.push('/(auth)')}
+           onPress={() => router.push('/(onboarding)')}
           />
           {/* <ThemedText 
           type='subtitle'
