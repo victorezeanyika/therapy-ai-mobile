@@ -42,7 +42,7 @@ function RootLayoutNav() {
       <ToastProvider>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="splash" options={{ headerShown: false }} />
+          <Stack.Screen name="welcome" options={{ headerShown: false }} />
           <Stack.Screen name="subscriptions" options={{ headerShown: false }} />
           <Stack.Screen name="chat-detail" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)/index" options={{ headerShown: false }} />

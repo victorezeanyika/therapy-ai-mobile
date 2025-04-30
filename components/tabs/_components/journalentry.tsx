@@ -7,6 +7,7 @@ import { useToast } from '@/context/toast-context';
 import { JournalEntry as JournalEntryType } from '@/features/journal-api';
 import { formatDate } from '@/utils/date-formatter';
 import { ThemedView } from '@/components/ThemedView';
+import { Colors } from '@/constants/Colors';
 interface JournalEntryProps {
   title: string;
   content: string;
@@ -102,6 +103,8 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
+    borderRightColor:Colors.harmony.primary,
+    borderRightWidth:4,
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
     elevation: 5,

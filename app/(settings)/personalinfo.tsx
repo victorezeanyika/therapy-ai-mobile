@@ -159,7 +159,6 @@ export default function PersonalInfo() {
           placeholder="Select gender"
           icon="users"
           options={[
-            { label: "Select gender", value: "" },
             { label: "Male", value: "male" },
             { label: "Female", value: "female" },
             { label: "Other", value: "other" },

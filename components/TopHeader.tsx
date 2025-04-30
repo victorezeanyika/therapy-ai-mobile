@@ -15,7 +15,6 @@ export default function TopHeader({title}:{title:string}){
         }}>
             <BackButton />
             <ThemedText>{title}</ThemedText>
-            <ThemedText></ThemedText>
         </View>
     )
 }

@@ -1,114 +1,66 @@
-import { View, StyleSheet, Image, Animated, TouchableOpacity, Text } from 'react-native';
-import { useRouter } from 'expo-router';
+import { View, StyleSheet, Animated, Text } from 'react-native';
 import { useEffect, useRef } from 'react';
+import { useRouter } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
-import CustomButton from '@/components/ui/Button';
 
-export default function WelcomeScreen() {
+export default function SplashScreen() {
   const router = useRouter();
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(50)).current;
+  const scaleAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Staggered animations
-    Animated.sequence([
-      // Fade in the image
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 800,
-        useNativeDriver: true,
-      }),
-      // Slide up the text
-      Animated.spring(slideAnim, {
-        toValue: 0,
-        tension: 50,
-        friction: 7,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    // Start scale animation
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      tension: 10,
+      friction: 2,
+      useNativeDriver: true,
+    }).start();
+
+    // Navigate to welcome page after animation
+    const timer = setTimeout(() => {
+      router.replace('/welcome');
+    }, 2000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
     <ThemedView
-      lightColor={Colors.harmony.white}
+      lightColor={Colors.harmony.primary}
       darkColor={Colors.harmony.primarydark}
       style={styles.container}
     >
-      <View style={styles.content}>
-      <View>
-            <ThemedText
-            lightColor={Colors.harmony.primary}
-            darkColor='#fff'
-            style={{
-              textAlign:'center',
-            }}
-            >Welcome to Serentis</ThemedText>
-            <ThemedText
-            lightColor={Colors.harmony.primary}
-            darkColor='#fff'
-            type='subtitle' 
-            style={{
-              marginTop:10,
-              textAlign:'center',
-            }}
-            >Your AI-powered companion for 
-            emotional balance, self-reflection,
-            and personal growth.
-            </ThemedText>
-          </View>
-        <Animated.View
-          style={[
-            styles.imageContainer,
-            {
-              opacity: fadeAnim,
-              transform: [
-                {
-                  scale: fadeAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0.8, 1],
-                  }),
-                },
-              ],
-            },
-          ]}
-        > 
-         
-          <Image
-            source={require('../assets/images/frame1.png')}
-            style={styles.image}
-            resizeMode="contain"
-          />
-        </Animated.View>
-        <Animated.View
-          style={[
-            styles.textContainer,
-            {
-              opacity: fadeAnim,
-              transform: [
-                {
-                  translateY: slideAnim,
-                },
-              ],
-            },
-          ]}
+      <Animated.View
+        style={[
+          styles.titleContainer,
+          {
+            transform: [
+              {
+                scale: scaleAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.5, 1],
+                }),
+              },
+            ],
+            opacity: scaleAnim,
+          },
+        ]}
+
+      >
+        <ThemedView
+        lightColor={Colors.harmony.primary}
+        darkColor='#141718'
+        style={{
+          flex:1,
+          justifyContent:'center',
+          alignItems:'center',
+        }}
         >
-          <CustomButton 
-           title='Get Started'
-           onPress={() => router.push('/(auth)')}
-          />
-          {/* <ThemedText 
-          type='subtitle'
-           style={{
-            marginTop:20,
-            fontSize:14,
-            fontWeight:'bold',
-            fontFamily:'Gotham-bold'
-          }}>Already have an account? SignIn</ThemedText>
-           */}
-        </Animated.View>
-      </View>
+        <Text style={styles.title}>Serentis</Text>
+        </ThemedView>
+      </Animated.View>
     </ThemedView>
   );
 }
@@ -116,35 +68,17 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop:40,
-  },
-  content: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent:'space-around',
-    padding: 20,
+    justifyContent: 'center',
   },
-  imageContainer: {
-    width: '100%',
+  titleContainer: {
     alignItems: 'center',
-    marginBottom: 40,
-  },
-  image: {
-    width: '80%',
-    height: 300,
-  },
-  textContainer: {
-    alignItems: 'center',
+    justifyContent: 'center',
   },
   title: {
-    fontSize: 32,
+    fontSize: 60,
     fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 18,
-    textAlign: 'center',
-    opacity: 0.8,
+    fontFamily:'Hc',
+    color:'#fff',
   },
 }); 

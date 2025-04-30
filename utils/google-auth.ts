@@ -9,10 +9,13 @@ import { useToast } from '@/context/toast-context';
 import * as AuthSession from 'expo-auth-session';
 
 
-const redirectUri = AuthSession.makeRedirectUri({
-  scheme: 'myapp',
-  native: 'com.google.auth.googleauth',
-});
+const redirectUri = AuthSession.makeRedirectUri(
+  { 
+    native: 'com.kidscantech.TherapyAi',
+    scheme: 'TherapyAi',
+   }
+);
+
 
 console.log(
   redirectUri,

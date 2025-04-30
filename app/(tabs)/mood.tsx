@@ -62,7 +62,7 @@ export default function MoodJournalScreen({ navigation }) {
     <ThemedView 
     style={{ 
       flex: 1 ,
-      paddingTop: 30,
+      paddingTop: 20,
 
     }}
     >
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
-    marginBottom: 62,
+    // marginBottom: 62,
   },
   header: {
     flexDirection: 'row',

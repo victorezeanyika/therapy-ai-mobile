@@ -42,7 +42,10 @@ export default function HomeScreen() {
 
   return (
       <ThemedView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
+      <ScrollView
+       style={styles.scrollView}
+       showsVerticalScrollIndicator={false}
+      >
         {/* Header */}
        <Header  name={user?.name}/>
         {/* Upgrade Card */}
@@ -122,8 +125,8 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding:20,
-    marginTop:20,
+    paddingHorizontal:20,
+    marginTop:30,
   },
   scrollView: {
     flex: 1,

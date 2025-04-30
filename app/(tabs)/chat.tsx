@@ -65,7 +65,6 @@ export default function WelcomeScreen() {
         </TouchableOpacity>
       ))}
     </Animated.View> */}
-    <View style={styles.container}>
       
 
       <ThemedView style={styles.container}>
@@ -124,7 +123,6 @@ export default function WelcomeScreen() {
           contentContainerStyle={styles.featuresList}
         />
       </ThemedView>
-    </View>
     </KeyboardAvoidingView>
   );
 }
