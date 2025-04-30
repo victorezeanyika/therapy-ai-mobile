@@ -48,6 +48,7 @@ function RootLayoutNav() {
           <Stack.Screen name="(auth)/index" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)/assessment" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)/verify-otp" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)/forgot-password" options={{ headerShown: false }} />
           <Stack.Screen name="(settings)/accountinfo" options={{ headerShown: false }} />
           <Stack.Screen name="(settings)/personalinfo" options={{ headerShown: false }} />
           <Stack.Screen name="(settings)/security" options={{ headerShown: false }} />
