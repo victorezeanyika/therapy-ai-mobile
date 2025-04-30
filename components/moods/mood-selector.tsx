@@ -1,23 +1,33 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { ThemedText } from "../ThemedText";
 
-const MoodSelector = ({ moods }: { moods: any[] }) => (
+interface MoodSelectorProps {
+  moods: Array<{
+    label: string;
+    color: string;
+    submoods: string[];
+  }>;
+  onSelect: (mood: string) => void;
+}
+
+const MoodSelector = ({ moods, onSelect }: MoodSelectorProps) => (
   <View style={styles.moodSelector}>
     {moods.map((mood, id) => (
-      <View style={{flexDirection:'row', alignItems:'center', gap:10}}>
-      <View
+      <TouchableOpacity 
         key={id}
-        style={[
-          styles.moodButton,
-          { backgroundColor: mood.color }
-        ]}
+        style={{flexDirection:'row', alignItems:'center', gap:10}}
+        onPress={() => onSelect(mood.label)}
       >
-      </View>
+        <View
+          style={[
+            styles.moodButton,
+            { backgroundColor: mood.color }
+          ]}
+        />
         <ThemedText type="defaultSemiBold" style={styles.moodButtonText}>
-          {mood.name}
+          {mood.label}
         </ThemedText>
-        </View>
-
+      </TouchableOpacity>
     ))}
   </View>
 );
@@ -33,7 +43,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   moodButton: {
-    borderRadius: 8,
+    // borderRadius: 8,
     width: 20,
     height: 30,
     marginHorizontal: 4,

@@ -10,7 +10,7 @@ interface JournalListProps {
 }
 
 export default function JournalList({ journals, onEdit }: JournalListProps) {
-  console.log(journals, 'this are');
+  // console.log(journals, 'this are');
   return (
     <View style={styles.container}>
       <View>

@@ -3,17 +3,17 @@ import { View, Text } from "react-native";
 import Svg, { G, Path, Text as SvgText } from "react-native-svg";
 import { ThemedText } from "../ThemedText";
 
+interface MoodWheelProps {
+  onSelect: (mood: string) => void;
+}
+
 const MOODS = [
   {
     label: "Sad",
     color: "#A3C4F3",
-    children: ["Bored", "Lonely", "Despair", "Guilty", "Insecure", "Rejected"],
+    children: ["Bored", "Lonely", "Insecure", "Rejected"],
   },
-  {
-    label: "Fear",
-    color: "#B4AEE8",
-    children: ["Scared", "Anxious", "Insecure", "Rejected"],
-  },
+
   {
     label: "Anger",
     color: "#F7A072",
@@ -69,10 +69,15 @@ function describeArc(cx: number, cy: number, r1: number, r2: number, startAngle:
   ].join(" ");
 }
 
-const MoodWheel = () => {
+const MoodWheel: React.FC<MoodWheelProps> = ({ onSelect }) => {
   const [selected, setSelected] = useState<string | null>(null);
 
   const mainAnglePerMood = 360 / MOODS.length;
+
+  const handleMoodSelect = (mood: string) => {
+    setSelected(mood);
+    onSelect(mood);
+  };
 
   return (
     <View style={{ alignItems: "center", justifyContent: "center" }}>
@@ -92,7 +97,7 @@ const MoodWheel = () => {
                   fill={mood.color}
                   stroke="#fff"
                   strokeWidth={2}
-                  onPress={() => setSelected(mood.label)}
+                  onPress={() => handleMoodSelect(mood.label)}
                 />
                 <SvgText
                   x={textPos.x}
@@ -129,7 +134,7 @@ const MoodWheel = () => {
                     fill={mood.color}
                     stroke="#fff"
                     strokeWidth={2}
-                    onPress={() => setSelected(child)}
+                    onPress={() => handleMoodSelect(child)}
                   />
                   <SvgText
                     x={textPos.x}
@@ -149,8 +154,7 @@ const MoodWheel = () => {
       </Svg>
 
       {/* Selected mood */}
-      <ThemedText 
-      style={{ marginVertical: 20, fontSize: 18 }}>
+      <ThemedText style={{ marginVertical: 20, fontSize: 18 }}>
         {selected ? `Selected: ${selected}` : "Tap a mood"}
       </ThemedText>
     </View>
