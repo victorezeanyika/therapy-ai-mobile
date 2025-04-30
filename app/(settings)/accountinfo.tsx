@@ -15,7 +15,7 @@ const settingData = [
   {
     title: "Payment Methods",
     sub: "Manage all of your payment methods",
-    link: "(settings)/paymentmethods",
+    link: "/(subscriptions)/basic",
   },
   {
     title: "Delete My Account",

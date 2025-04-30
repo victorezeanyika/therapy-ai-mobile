@@ -58,6 +58,12 @@ export const authApi = apiSlice.injectEndpoints({
         body: payload,
       }),
     }),
+    deleteAccount:builder.mutation<any, void>({
+      query: () => ({
+        url: '/users/profile',
+        method: 'DELETE', 
+      }),
+    }),
     verifyEmail: builder.mutation({
       query: (email) => ({
         url: '/auth/verify/email',
@@ -122,4 +128,5 @@ export const {
   useGetProfileQuery,
   useUpdateProfileMutation,
   useGoogleAuthMutation,
+  useDeleteAccountMutation,
  } = authApi;

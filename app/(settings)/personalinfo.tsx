@@ -55,7 +55,7 @@ export default function PersonalInfo() {
         name: userDetails?.name || "",
         email: userDetails?.email || "",
         gender: userDetails?.gender || "",
-        dateOfBirth: userDetails?.birthday || "",
+        dateOfBirth: ""|| "",
         profileImage: userDetails?.avatar || "",
       });
     }

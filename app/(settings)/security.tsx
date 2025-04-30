@@ -12,7 +12,7 @@ const settingData = [
   {
     title: "Update your password",
     sub: "Set a new password",
-    link: "/(settings)/updatepassword",
+    link: "/(settings)/update-password",
   },
 
 ];

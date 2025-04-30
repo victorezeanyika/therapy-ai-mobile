@@ -50,6 +50,9 @@ function RootLayoutNav() {
           <Stack.Screen name="(auth)/verify-otp" options={{ headerShown: false }} />
           <Stack.Screen name="(settings)/accountinfo" options={{ headerShown: false }} />
           <Stack.Screen name="(settings)/personalinfo" options={{ headerShown: false }} />
+          <Stack.Screen name="(settings)/security" options={{ headerShown: false }} />
+          <Stack.Screen name="(settings)/delete" options={{ headerShown: false }} />
+          <Stack.Screen name="(settings)/update-password" options={{ headerShown: false }} />
           <Stack.Screen name="(subscriptions)/basic" options={{ headerShown: false }} />
           <Stack.Screen name="(subscriptions)/standard" options={{ headerShown: false }} />
           <Stack.Screen name="(subscriptions)/premium" options={{ headerShown: false }} />
