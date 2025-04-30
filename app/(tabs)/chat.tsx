@@ -135,14 +135,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
+    paddingTop: 60, // Increased padding at the top
   },
   linksContainer: {
     gap: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-    marginTop: 10,
-
+    marginTop: 30,
   },
   linkItem: {
     paddingTop: 15,

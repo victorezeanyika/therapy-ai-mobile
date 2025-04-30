@@ -59,11 +59,11 @@ const RenderField = ({ field, props }: { field: any; props: any }) => {
             }}
             onBlur={field.onBlur}
             secureTextEntry={
-              (props.name === 'password' || props.name === 'confirmpassword') && !showPass
+              (props.name === 'password' || props.name === 'password2' || props.name === 'confirmpassword') && !showPass
             }
             placeholderTextColor="#A0A0A0"
           />
-          {(props.name === 'password' || props.name === 'confirmpassword') && (
+          {(props.name === 'password' || props.name === 'password2' || props.name === 'confirmpassword') && (
             <TouchableOpacity onPress={showPassword}>
               <Feather
                 name={showPass ? 'eye' : 'eye-off'}
@@ -118,18 +118,18 @@ const RenderField = ({ field, props }: { field: any; props: any }) => {
                   height: '100%',
                 },
               }}
-              Icon={() => (
-                <Feather
-                  name="chevron-down"
-                  size={16}
-                  color="#ACB5BB"
-                  style={{
-                    position: 'absolute',
-                    right: 0,
-                    top: 15,
-                  }}
-                />
-              )}
+              // Icon={() => (
+              //   <Feather
+              //     name="chevron-down"
+              //     size={16}
+              //     color="#ACB5BB"
+              //     style={{
+              //       position: 'absolute',
+              //       right: 0,
+              //       top: 15,
+              //     }}
+              //   />
+              // )}
             />
           </View>
         </ThemedView>

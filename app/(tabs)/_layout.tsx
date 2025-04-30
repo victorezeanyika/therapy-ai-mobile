@@ -1,16 +1,18 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
-import { HapticTab } from '@/components/HapticTab';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useTheme } from '@/context/theme-context';
-import { AntDesign, FontAwesome5, Ionicons } from '@expo/vector-icons';
-import { useThemeColor } from '@/hooks/useThemeColor';
+import { Tabs } from "expo-router";
+import React from "react";
+import { Platform } from "react-native";
+import { HapticTab } from "@/components/HapticTab";
+import TabBarBackground from "@/components/ui/TabBarBackground";
+import { Colors } from "@/constants/Colors";
+import { useTheme } from "@/context/theme-context";
+import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 export default function TabLayout() {
-  const tabBarBgColor = useThemeColor({ light: '#FCFCFC', dark: '#232627' }, 'bgCard');
-
+  const tabBarBgColor = useThemeColor(
+    { light: "#FCFCFC", dark: "#232627" },
+    "bgCard"
+  );
 
   return (
     <Tabs
@@ -35,7 +37,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: "Home",
           tabBarIcon: ({ color }) => (
             <AntDesign name="appstore-o" size={20} color={color} />
           ),
@@ -44,7 +46,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="journal"
         options={{
-          title: 'Journal',
+          title: "Journal",
           tabBarIcon: ({ color }) => (
             <Ionicons name="add-circle-outline" size={20} color={color} />
           ),
@@ -53,27 +55,27 @@ export default function TabLayout() {
       <Tabs.Screen
         name="chat"
         options={{
-          title: 'Chat',
+          title: "Chat",
           tabBarIcon: ({ color }) => (
             <FontAwesome5 name="robot" size={20} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="settings"
+        name="mood"
         options={{
-          title: 'Settings',
+          title: "Mood",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="settings-outline" size={20} color={color} />
+            <Ionicons name="happy-outline" size={20} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="mood"
+        name="settings"
         options={{
-          title: 'Mood',
+          title: "Settings",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="happy-outline" size={20} color={color} />
+            <Ionicons name="settings-outline" size={20} color={color} />
           ),
         }}
       />

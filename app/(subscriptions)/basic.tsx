@@ -11,6 +11,7 @@ const { width } = Dimensions.get('window');
 
 export default function BasicPlanScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("monthly");
   const flatListRef = useRef(null);
   const { data: plan, isLoading, isError } = useGetSubscriptionsQuery();
   const [createPaymentIntent, { isLoading: isCreatingPaymentIntent }] = useCreatePaymentIntentMutation();
@@ -26,6 +27,7 @@ export default function BasicPlanScreen() {
       const response = await createPaymentIntent({
         email: user?.email,
         plan: planKey,
+        billingPeriod,
       }).unwrap();
 
       if (response?.sessionUrl) {
@@ -42,13 +44,21 @@ export default function BasicPlanScreen() {
     }
   };
 
+  const getPrice = (price: number) => {
+    if (billingPeriod === "annual") {
+      return Math.round(price * 12 * 0.8); // 20% discount for annual
+    }
+    return price;
+  };
+
   const plans = plan
     ? Object.entries(plan).map(([key, value]) => ({
         key,
         title: value.name,
-        price: value.price === 0 ? 'Free' : `€${value.price}`,
+        price: value.price === 0 ? 'Free' : `€${getPrice(value.price)}`,
         rawPrice: value.price,
         features: value.features,
+        period: billingPeriod === "annual" ? "year" : "month"
       }))
     : [];
 
@@ -69,10 +79,12 @@ export default function BasicPlanScreen() {
           width: '100%',
           overflow: 'hidden',
           borderRadius: 10.9,
+          paddingHorizontal: 10,
         }}
       >
-        <Text style={styles.planTitle}>{item.title}</Text>
-        <Text style={styles.planPrice}>{item.price}</Text>
+        <Text style={[styles.planTitle, { textAlign: 'center' }]}>{item.title}</Text>
+        <Text style={[styles.planPrice, { textAlign: 'center' }]}>{item.price}</Text>
+        <Text style={[styles.periodText, { textAlign: 'center' }]}>per {item.period}</Text>
       </View>
 
       <View style={styles.featureList}>
@@ -124,34 +136,54 @@ export default function BasicPlanScreen() {
       </ThemedView>
     );
   }
-return (
-  <ThemedView style={styles.container}>
-    <TopHeader title="Plan Overview" />
-    <FlatList
-      ref={flatListRef}
-      data={plans}
-      keyExtractor={(item, index) => index.toString()}
-      renderItem={renderItem}
-      horizontal
-      pagingEnabled
-      showsHorizontalScrollIndicator={false}
-      onScroll={handleScroll}
-    />
 
-    <View style={styles.pagination}>
-      {plans.map((_, index: number) => (
-        <View
-          key={index}
-          style={[
-            styles.dot,
-            { backgroundColor: currentIndex === index ? Colors.harmony.primary : '#ccc' },
-          ]}
-        />
-      ))}
-    </View>
-  </ThemedView>
-);
-};
+  return (
+    <ThemedView style={styles.container}>
+      <TopHeader title="Plan Overview" />
+      
+      <View style={styles.periodSelector}>
+        <TouchableOpacity 
+          style={[styles.periodButton, billingPeriod === "monthly" && styles.periodButtonActive]}
+          onPress={() => setBillingPeriod("monthly")}
+        >
+          <Text style={[styles.periodButtonText, billingPeriod === "monthly" && styles.periodButtonTextActive]}>Monthly</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[styles.periodButton, billingPeriod === "annual" && styles.periodButtonActive]}
+          onPress={() => setBillingPeriod("annual")}
+        >
+          <Text style={[styles.periodButtonText, billingPeriod === "annual" && styles.periodButtonTextActive]}>Annual</Text>
+          <View style={styles.saveBadge}>
+            <Text style={styles.saveBadgeText}>Save 20%</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+
+      <FlatList
+        ref={flatListRef}
+        data={plans}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderItem}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onScroll={handleScroll}
+      />
+
+      <View style={styles.pagination}>
+        {plans.map((_, index: number) => (
+          <View
+            key={index}
+            style={[
+              styles.dot,
+              { backgroundColor: currentIndex === index ? Colors.harmony.primary : '#ccc' },
+            ]}
+          />
+        ))}
+      </View>
+    </ThemedView>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -197,6 +229,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Gotham-Book',
     marginVertical: 10,
     color: '#001133',
+  },
+  periodText: {
+    fontSize: 16,
+    color: '#666',
+    fontFamily: 'Gotham-Book',
+    marginTop: 5
   },
   featureList: {
     width: '100%',
@@ -269,4 +307,46 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginHorizontal: 5,
   },
+  periodSelector: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 4,
+    borderRadius: 25,
+    marginBottom: 20,
+    marginHorizontal: 20
+  },
+  periodButton: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row'
+  },
+  periodButtonActive: {
+    backgroundColor: Colors.harmony.primary
+  },
+  periodButtonText: {
+    color: '#666',
+    fontSize: 14,
+    fontFamily: 'Gotham-Book'
+  },
+  periodButtonTextActive: {
+    color: '#fff'
+  },
+  saveBadge: {
+    backgroundColor: '#e6f7ed',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+    marginLeft: 8
+  },
+  saveBadgeText: {
+    color: '#059669',
+    fontSize: 12,
+    fontFamily: 'Gotham-Book'
+  }
 });

@@ -52,7 +52,6 @@ export default function DeleteAccount() {
       <View 
       style={{ 
         padding: 20,
-        backgroundColor: 'rgba(255, 0, 0, 0.1)',
         borderRadius: 30,
         marginTop: 20,
 

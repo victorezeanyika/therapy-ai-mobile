@@ -98,16 +98,17 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    borderRightColor:Colors.harmony.primary,
-    borderRightWidth:4,
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    // Remove these shadow properties:
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.1,
+    // shadowRadius: 3.84,
+    // elevation: 5,
+    borderRightColor: Colors.harmony.primary,
+    borderRightWidth: 4,
   },
   header: {
     marginBottom: 8,

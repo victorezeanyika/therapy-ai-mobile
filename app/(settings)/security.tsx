@@ -16,12 +16,12 @@ const settingData = [
     sub: "Set a new password",
     link: "/(settings)/update-password",
   },
-  {
-    title: "Logout",
-    sub: "Sign out of your account",
-    link: "Logout",
-    red: true
-  }
+  // {
+  //   title: "Logout",
+  //   sub: "Sign out of your account",
+  //   link: "Logout",
+  //   red: true
+  // }
 ];
 
 export default function SecurityAndData() {

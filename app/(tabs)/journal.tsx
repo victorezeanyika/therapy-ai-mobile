@@ -115,6 +115,14 @@ const JournalScreen = () => {
     setTags(entry.tags || []);
   };
 
+  const handleCancelEdit = () => {
+    setEditingEntry(null);
+    setTitle('');
+    setContent('');
+    setTags([]);
+    setTagInput('');
+  };
+
   const handleAddTag = () => {
     if (tagInput.trim() !== '' && !tags.includes(tagInput.trim())) {
       setTags([...tags, tagInput.trim()]);
@@ -172,11 +180,18 @@ const JournalScreen = () => {
             <JournalTextArea value={content} onChangeText={setContent} />
             <AddEntryButton 
               onPress={handleAddEntry} 
+              onCancel={handleCancelEdit}
               loading={isAdding || isUpdating}
               title={editingEntry ? 'Update Entry' : 'Add Entry'}
+              isEditing={!!editingEntry}
             />
 
-            <JournalList journals={filteredJournals} onEdit={handleEdit} />
+            <JournalList 
+              journals={filteredJournals} 
+              onEdit={handleEdit} 
+              onCancelEdit={handleCancelEdit}
+              isEditing={!!editingEntry}
+            />
           </View>
         </KeyboardAvoidingView>
       </ScrollView>
