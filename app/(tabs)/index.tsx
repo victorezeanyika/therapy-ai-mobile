@@ -39,6 +39,7 @@ export default function HomeScreen() {
       completed: false
     }
   ];
+  console.log(dashboardData, 'dashboardData')
 
   return (
       <ThemedView style={styles.container}>

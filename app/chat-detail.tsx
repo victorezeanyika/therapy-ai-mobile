@@ -33,7 +33,6 @@ export default function ChatScreen() {
         const response = await createSession().unwrap();
         console.log('Session response:', response);
         setSessionId(response.entryId);
-        
         // Set initial message from the session response
         if (response.messages && response.messages.length > 0) {
           const initialMessage = response.messages[0];
@@ -93,7 +92,7 @@ export default function ChatScreen() {
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={100}
+        // keyboardVerticalOffset={100}
       >
         <FlatList
           data={messages}

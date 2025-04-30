@@ -7,6 +7,8 @@ import { Feather, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { router } from "expo-router";
+import { useDispatch } from "react-redux";
+import { logout } from "@/features/auth-slice";
 
 const settingData = [
   {
@@ -14,10 +16,16 @@ const settingData = [
     sub: "Set a new password",
     link: "/(settings)/update-password",
   },
-
+  {
+    title: "Logout",
+    sub: "Sign out of your account",
+    link: "Logout",
+    red: true
+  }
 ];
 
 export default function SecurityAndData() {
+  const dispatch = useDispatch();
 
   return (
       <ThemedView style={{
@@ -33,6 +41,7 @@ export default function SecurityAndData() {
               sub={item.sub}
               red={item.red}
               link={item.link}
+              icon={<MaterialIcons name="chevron-right" size={24} color={useThemeColor({light:"#000", dark:"#fff"}, 'text')} />}
             />
           ))}
         </View>
@@ -45,17 +54,17 @@ type SettingCardProps = {
   sub: string;
   icon: React.ReactNode;
   link: string;
-  red:boolean
+  red?: boolean;
 };
 
-export function SettingCard({ title, sub, icon, link , red}: SettingCardProps) {
-  const iconSvg = useThemeColor({light:"#000", dark:"#fff"}, 'ds');
-
+export function SettingCard({ title, sub, icon, link, red }: SettingCardProps) {
+  const iconSvg = useThemeColor({light:"#000", dark:"#fff"}, 'text');
+  const dispatch = useDispatch();
 
   const handlePress = () => {
     if (link === "Logout") {
-      // Handle logout logic
-      console.log("Logging out...");
+      dispatch(logout());
+      router.replace("/(auth)");
     } else {
       router.push(link as never);
     }
@@ -123,11 +132,7 @@ export function SettingCard({ title, sub, icon, link , red}: SettingCardProps) {
             alignItems: "center",
           }}
         >
-          <MaterialIcons 
-          name="chevron-right"
-          size={24}
-          color={iconSvg}
-          />
+          {icon}
         </View>
       </ThemedView>
     </TouchableOpacity>

@@ -42,15 +42,28 @@ export default function DeleteAccount() {
   };
 
   return (
-    <ThemedView style={{ marginTop: 20 }}>
+    <ThemedView 
+      style={{ 
+      marginTop: 20, 
+      flex: 1 , 
+
+      }}>
       <TopHeader title="Delete Account" />
-      <View style={{ padding: 20 }}>
+      <View 
+      style={{ 
+        padding: 20,
+        backgroundColor: 'rgba(255, 0, 0, 0.1)',
+        borderRadius: 30,
+        marginTop: 20,
+
+       }}>
         <Text style={{
           fontSize: 16,
           color: 'red',
           marginBottom: 20,
           textAlign: 'center',
           fontFamily: 'Gotham-Book',
+
         }}>
           Once you delete your account, there is no going back. Please be certain.
         </Text>

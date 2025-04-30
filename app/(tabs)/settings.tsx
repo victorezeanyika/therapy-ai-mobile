@@ -6,6 +6,8 @@ import { View, SafeAreaView, TouchableOpacity } from "react-native";
 import { Feather, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { router } from "expo-router";
+import { useDispatch } from "react-redux";
+import { logout } from "@/features/auth-slice";
 
 const settingData = [
   {
@@ -35,6 +37,8 @@ const settingData = [
 ];
 
 export default function SettingsPage() {
+  const dispatch = useDispatch();
+
   return (
       <ThemedView style={{
         height:'100%',
@@ -64,11 +68,12 @@ type SettingCardProps = {
 };
 
 export function SettingCard({ title, sub, icon, link }: SettingCardProps) {
+  const dispatch = useDispatch();
 
   const handlePress = () => {
     if (link === "Logout") {
-      // Handle logout logic
-      console.log("Logging out...");
+      dispatch(logout());
+      router.replace("/(auth)");
     } else {
       router.push(link as never);
     }
