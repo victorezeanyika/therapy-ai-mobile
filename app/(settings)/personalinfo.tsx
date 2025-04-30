@@ -84,7 +84,10 @@ export default function PersonalInfo() {
   const profileImage = watch("profileImage");
 
   return (
-    <ThemedView style={{ marginTop: 20 }}>
+    <ThemedView 
+     style={{ 
+      marginTop: 20,
+     flex: 1 }}>
       <TopHeader title="Personal Information" />
       <View style={{ padding: 20, justifyContent:'center', alignItems:'center' }}>
         {/* Profile Image Picker */}

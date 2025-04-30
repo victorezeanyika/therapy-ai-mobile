@@ -72,7 +72,7 @@ export default function PersonalInfo() {
   
 
   return (
-    <ThemedView style={{ marginTop: 20 }}>
+    <ThemedView style={{ marginTop: 20 , flex: 1 }}>
       <TopHeader title="Update Password" />
       <View style={{ padding: 20, justifyContent:'center', alignItems:'center' }}>
         <CustomFormField
