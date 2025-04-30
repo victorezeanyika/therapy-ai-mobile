@@ -4,19 +4,18 @@ import { ThemedText } from "./ThemedText";
 import { router } from "expo-router";
 import { Colors } from "@/constants/Colors";
 
-
 export default function UpcommingSession() {
     return (
         <ThemedView 
         lightColor='#fff'
         darkColor='#232627'
         style={styles.container}>
-            <ThemedText
+            {/* <ThemedText
             type="title"
             style={{
                 fontSize: 15,
             }}
-            >Upcoming Session</ThemedText>
+            >Start a Conversation</ThemedText> */}
             <ThemedText
             type="subtitle"
             style={{
@@ -24,13 +23,12 @@ export default function UpcommingSession() {
                 fontSize: 12,
             }}
             >
-                You have a session coming up in few hours, 
-                so be sure to prepare and make the most of the time before it begins.
+                Ready to talk? Your AI therapist is here to listen.
             </ThemedText>
             <TouchableOpacity
             style={styles.button}
             onPress={() => {
-                router.push('/chat-detail');
+                router.push('/chat');
             }}
             >
                 <ThemedText
@@ -41,7 +39,7 @@ export default function UpcommingSession() {
                     fontWeight: 'bold',
                     fontFamily: 'Gotham-Bold',
                 }}
-                >Join Session</ThemedText>
+                >Start Chat</ThemedText>
                 </TouchableOpacity>
             </ThemedView>
     )

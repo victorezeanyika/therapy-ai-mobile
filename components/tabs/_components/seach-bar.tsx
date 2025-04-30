@@ -1,8 +1,8 @@
 import { ThemedView } from '@/components/ThemedView';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { Feather } from '@expo/vector-icons';
-import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import React, { useRef } from 'react';
+import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 
 interface SearchBarProps {
   value: string;
@@ -10,21 +10,33 @@ interface SearchBarProps {
 }
 
 const SearchBar = ({ value, onChangeText }: SearchBarProps) => {
+  const inputRef = useRef<TextInput>(null);
   const inputText = useThemeColor({light:'#000000', dark:'#FFFFFF'}, 'button')
   const bgColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'icon');
   return (
-    <ThemedView
-    darkColor="#23262780"
-    lightColor="#FFFFFF80"
-     style={styles.container}>
-      <Feather name="search" size={24} color={bgColor} />
-      <TextInput
-        placeholder="Search"
-        value={value}
-        onChangeText={onChangeText}
-        style={[styles.input, {color:inputText}]}
-      />
-    </ThemedView>
+    <TouchableOpacity
+      activeOpacity={0.7}
+      onPress={() => {
+        // Focus the TextInput when the container is pressed
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }}
+    >
+      <ThemedView
+        darkColor="#23262780"
+        lightColor="#FFFFFF80"
+        style={styles.container}>
+        <Feather name="search" size={24} color={bgColor} />
+        <TextInput
+          ref={inputRef}
+          placeholder="Search"
+          value={value}
+          onChangeText={onChangeText}
+          style={[styles.input, {color:inputText, flex: 1}]}
+        />
+      </ThemedView>
+    </TouchableOpacity>
   );
 };
 
