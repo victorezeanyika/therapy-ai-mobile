@@ -18,6 +18,7 @@ export const activitiesApi = apiSlice.injectEndpoints({
       query: () => '/activities/recommended',
     }),
   }),
+  overrideExisting: true
 });
 
 export const { useGetActivitiesQuery } = activitiesApi;
