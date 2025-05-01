@@ -13,40 +13,52 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
 
   return (
     <View style={[styles.row, isUser ? styles.userRow : styles.botRow]}>
-     
       <View style={[styles.bubble, isUser ? styles.userBubble : styles.botBubble]}>
-       
-        {isUser ? (
-        <View style={{flexDirection:'row', alignItems:'center'}}>
-        <Image
-          source={require('@/assets/images/you.png')} // 👈 We'll add a bot avatar here
-          style={styles.avatar}
+        <View style={styles.header}>
+          <Image
+            source={isUser 
+              ? require('@/assets/images/you.png')
+              : require('@/assets/images/serentis-ai.png')}
+            style={styles.avatar}
           />
-          <Text style={styles.senderName}>You</Text>
-          </View>
-      ) : (
-        <View style={{flexDirection:'row', alignItems:'center'}}>
-        <Image
-          source={require('@/assets/images/serentis-ai.png')} // 👈 We'll add a bot avatar here
-          style={styles.avatar}
-          />
-          <Text style={styles.senderName}>Dr. Lukas</Text>
-          </View>
-      )}
+          <Text style={[styles.senderName, isUser && styles.userSenderName]}>
+            {isUser ? 'You' : 'Dr. Lukas'}
+          </Text>
+        </View>
         <Markdown
           style={{
             body: isUser ? styles.userText : styles.botText,
             heading1: {
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: 'bold',
-              marginTop:20,
-              marginBottom: 10,
-              color: isUser ? 'white' : '#000000',
+              marginTop: 16,
+              marginBottom: 8,
+              color: isUser ? '#FFFFFF' : '#2C3E50',
+              fontFamily: 'Gotham-Bold',
+            },
+            heading2: {
+              fontSize: 16,
+              fontWeight: 'bold',
+              marginTop: 14,
+              marginBottom: 7,
+              color: isUser ? '#FFFFFF' : '#2C3E50',
+              fontFamily: 'Gotham-Bold',
             },
             paragraph: {
-              marginTop: 12,
-              marginBottom: 12,
-            }
+              marginVertical: 8,
+              lineHeight: 20,
+            },
+            link: {
+              color: isUser ? '#E8F6FF' : Colors.harmony.primary,
+              textDecorationLine: 'underline',
+            },
+            list_item: {
+              marginVertical: 4,
+              lineHeight: 20,
+            },
+            bullet_list: {
+              marginVertical: 8,
+            },
           }}
         >
           {message.text}
@@ -59,53 +71,66 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
-    marginBottom: 12,
+    marginBottom: 16,
     alignItems: 'flex-end',
   },
   botRow: {
     justifyContent: 'flex-start',
     alignSelf: 'flex-start',
+    maxWidth: '85%',
   },
   userRow: {
     justifyContent: 'flex-end',
     alignSelf: 'flex-end',
+    maxWidth: '85%',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
   },
   avatar: {
-    width: 24,
-    height: 24,
-    borderRadius: 16,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     marginRight: 8,
   },
   senderName: {
     fontFamily: 'Gotham-Bold',
-    fontWeight: 'bold',
     fontSize: 14,
-    color: '#000',
+    color: '#2C3E50',
+    letterSpacing: 0.1,
+  },
+  userSenderName: {
+    color: '#FFFFFF',
   },
   bubble: {
-    maxWidth: '80%',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 20,
+    padding: 12,
+    borderRadius: 16,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 1 },
+    // shadowOpacity: 0.08,
+    // shadowRadius: 2,
+    // elevation: 2,
   },
   userBubble: {
     backgroundColor: Colors.harmony.primary,
     borderBottomRightRadius: 4,
   },
   botBubble: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF',
     borderBottomLeftRadius: 4,
   },
   userText: {
-    color: 'white',
+    color: '#FFFFFF',
     fontFamily: 'Gotham-Medium',
-    fontSize: 12,
-    lineHeight: 17,
+    fontSize: 14,
+    lineHeight: 20,
   },
   botText: {
-    color: '#000000',
+    color: '#2C3E50',
     fontFamily: 'Gotham-Medium',
-    fontSize: 12,
-    lineHeight: 17,
+    fontSize: 14,
+    lineHeight: 20,
   },
 });

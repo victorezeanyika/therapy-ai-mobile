@@ -105,7 +105,7 @@ export default function ChatScreen() {
     
         <View style={styles.inputContainer}>
           <TouchableOpacity style={styles.attachButton}>
-            <MaterialCommunityIcons name="paperclip" size={24} color="#9E9E9E" />
+            {/* <MaterialCommunityIcons name="paperclip" size={24} color="#9E9E9E" /> */}
           </TouchableOpacity>
     
           <TextInput
