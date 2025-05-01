@@ -46,7 +46,8 @@ export default function SignupForm() {
       const user = await register({ name, email, password }).unwrap();
       await AsyncStorage.setItem('user', JSON.stringify(user));
       success("Signup successful, please verify your email");
-      router.replace({ pathname: '/(auth)/verify-otp', params: { email: data.email } });
+      router.replace({ pathname: '/(auth)' });
+      // router.replace({ pathname: '/(auth)/verify-otp', params: { email: data.email } });
     } catch (error: any) {
       toastError(error?.response?.data?.message || error.message || "Something went wrong");
       console.log(error, 'error')

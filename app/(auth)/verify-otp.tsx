@@ -24,7 +24,7 @@ export default function VerifyOtp() {
   const dispatch = useDispatch();
   const { refetch: refetchProfile } = useGetProfileQuery();
   const { user } = useAppSelector(state => state.auth);
-
+  console.log(user, 'user');
   const handleChange = (text: string, index: number) => {
     const newOtp = [...otp];
     newOtp[index] = text;
@@ -52,7 +52,14 @@ export default function VerifyOtp() {
         const { data: userProfile } = await refetchProfile();        
         if (userProfile) {
           dispatch(setCredentials({ user: userProfile, accessToken: result.accessToken }));
-          router.replace('/(tabs)');
+          // Check if user has completed preferences
+          if (!userProfile.preferences?.primaryConcern) {
+            // Redirect to assessment if no primary concern is set
+            router.replace('/(auth)/assessment');
+          } else {
+            // Redirect to tabs if preferences are complete
+            router.replace('/(tabs)');
+          }
         }
       } catch (error: any) {
         alert(error?.data?.message || error?.data?.error || error?.message || 'An error occurred');

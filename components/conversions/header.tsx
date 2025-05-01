@@ -3,7 +3,7 @@ import { ThemedText } from "../ThemedText";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
-export default function ConversationsHeader() {
+export default function ConversationsHeader({stats}: {stats: any}) {
     const iconColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'icon');
 
     return (
@@ -27,7 +27,7 @@ export default function ConversationsHeader() {
                 fontWeight: 'bold',
                 fontFamily: 'Gotham-Bold', // Make sure it's correctly 'Gotham-Bold' not 'Gotham-bold'
               }}>
-                1571
+                {stats?.used}
               </ThemedText>
               <ThemedText 
               style={{
@@ -46,7 +46,7 @@ export default function ConversationsHeader() {
                         fontSize: 24,
                         fontWeight: 'bold',
                     }}>
-                        32
+                        {stats?.remaining}
                     </ThemedText>
                     </View>     
                     <ThemedText
@@ -65,7 +65,7 @@ export default function ConversationsHeader() {
                         fontSize: 24,
                         fontWeight: 'bold',
                     }}>
-                        Slow
+                        {stats?.sessionDurationMinutes} mins
                     </ThemedText>
                     </View>     
                     <ThemedText

@@ -5,11 +5,16 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 
 interface MessageBubbleProps {
-  message: { sender: string; text: string };
+  message: { 
+    sender: string; 
+    text: string;
+    timestamp: string;
+  };
 }
 
 export default function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.sender === 'user';
+  console.log(message, 'message');
 
   return (
     <View style={[styles.row, isUser ? styles.userRow : styles.botRow]}>
@@ -21,9 +26,14 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
               : require('@/assets/images/serentis-ai.png')}
             style={styles.avatar}
           />
-          <Text style={[styles.senderName, isUser && styles.userSenderName]}>
-            {isUser ? 'You' : 'Dr. Lukas'}
-          </Text>
+          <View style={styles.headerText}>
+            <Text style={[styles.senderName, isUser && styles.userSenderName]}>
+              {isUser ? 'You' : 'Dr. Lukas'}
+            </Text>
+            <Text style={[styles.timestamp, isUser && styles.userTimestamp]}>
+              {message.timestamp}
+            </Text>
+          </View>
         </View>
         <Markdown
           style={{
@@ -89,6 +99,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 8,
   },
+  headerText: {
+    flex: 1,
+  },
   avatar: {
     width: 28,
     height: 28,
@@ -103,6 +116,15 @@ const styles = StyleSheet.create({
   },
   userSenderName: {
     color: '#FFFFFF',
+  },
+  timestamp: {
+    fontFamily: 'Gotham-Medium',
+    fontSize: 10,
+    color: '#666666',
+    marginTop: 2,
+  },
+  userTimestamp: {
+    color: '#E8F6FF',
   },
   bubble: {
     padding: 12,

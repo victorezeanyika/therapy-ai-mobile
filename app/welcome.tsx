@@ -5,13 +5,21 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import CustomButton from '@/components/ui/Button';
+import { useAppSelector } from '@/features/hooks';
 
 export default function WelcomeScreen() {
   const router = useRouter();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
+  const { user } = useAppSelector(state => state.auth);
 
   useEffect(() => {
+    // Check if user is authenticated
+    if (user) {
+      router.replace('/(tabs)');
+      return;
+    }
+
     // Staggered animations
     Animated.sequence([
       // Fade in the image
@@ -28,7 +36,7 @@ export default function WelcomeScreen() {
         useNativeDriver: true,
       }),
     ]).start();
-  }, []);
+  }, [user]);
 
   return (
     <ThemedView
@@ -37,16 +45,16 @@ export default function WelcomeScreen() {
       style={styles.container}
     >
       <View style={styles.content}>
-      <View>
-            <ThemedText
+        <View>
+          <ThemedText
             lightColor={Colors.harmony.primary}
             darkColor='#fff'
             style={{
               textAlign:'center',
             }}
-            >Welcome to Serentis
-            </ThemedText>
-            <ThemedText
+          >Welcome to Serentis
+          </ThemedText>
+          <ThemedText
             lightColor={Colors.harmony.primary}
             darkColor='#fff'
             type='subtitle' 
@@ -54,11 +62,11 @@ export default function WelcomeScreen() {
               marginTop:10,
               textAlign:'center',
             }}
-            >Your AI-powered companion for 
+          >Your AI-powered companion for 
             emotional balance, self-reflection,
             and personal growth.
-            </ThemedText>
-          </View>
+          </ThemedText>
+        </View>
         <Animated.View
           style={[
             styles.imageContainer,
@@ -75,7 +83,6 @@ export default function WelcomeScreen() {
             },
           ]}
         > 
-         
           <Image
             source={require('../assets/images/frame1.png')}
             style={styles.image}
@@ -96,18 +103,9 @@ export default function WelcomeScreen() {
           ]}
         >
           <CustomButton 
-           title='Get Started'
-           onPress={() => router.push('/(onboarding)')}
+            title='Get Started'
+            onPress={() => router.replace('/(auth)')}
           />
-          {/* <ThemedText 
-          type='subtitle'
-           style={{
-            marginTop:20,
-            fontSize:14,
-            fontWeight:'bold',
-            fontFamily:'Gotham-bold'
-          }}>Already have an account? SignIn</ThemedText>
-           */}
         </Animated.View>
       </View>
     </ThemedView>

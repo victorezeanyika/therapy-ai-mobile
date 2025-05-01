@@ -1,37 +1,32 @@
 import { Fontisto } from "@expo/vector-icons";
-import { FlatList, View, Image } from "react-native";
+import { FlatList, View, Image, TouchableOpacity } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedView } from "../ThemedView";
 import { useGetActivitiesQuery } from "@/features/journal-api";
-const data = [
-  {
-    id: "1",
-    title: "Recent Breakup, felt sad as hell... 💔",
-    mood: "Sad",
-    emoji: "😔",
-    icon: require("../../assets/images/icon1.png"), // replace with your real local asset
-  },
-  {
-    id: "2",
-    title: "Just wanna stop existing",
-    mood: "Amazing",
-    emoji: "😌",
-    icon: require("../../assets/images/icon1.png"), // replace with your real local asset
-  },
-  {
-    id: "3",
-    title: "Shitty Teacher at University",
-    mood: "Happy",
-    emoji: "😊",
-    icon: require("../../assets/images/icon1.png"), // replace with your real local asset
-  },
-];
+import { useGetAllSessionsQuery, useGetAllSessionsBasicQuery } from "@/features/chat-api";
+import { router } from "expo-router";
 
-export default function Recents() {
-  const { data: activities, isLoading, error } = useGetActivitiesQuery();
+export default function Recents({sessions}: {sessions: any}) {
   const iconColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'icon');
-  console.log(activities);
+  // const { data } = useGetAllSessionsBasicQuery();
+  // const sessions = data?.sessions;
+  // console.log(data, 'sessions');
+  // console.log(sessions, 'sessions');
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
+  const handleSessionPress = (entryId: string) => {
+    router.push(`/chat-detail?sessionId=${entryId}`);
+  };
+
   return (
     <View style={{ flex: 1, paddingHorizontal: 30 }}>
       {/* Top Header */}
@@ -43,14 +38,17 @@ export default function Recents() {
           marginTop: 32,
         }}
       >
-        <ThemedText>Recent ({data.length})</ThemedText>
+        <ThemedText>Recent ({sessions?.length})</ThemedText>
         <View 
-         style={{ flexDirection: "row",
-         alignItems: "center", gap: 10, borderWidth: 1,
-         borderColor: iconColor,
-         paddingHorizontal: 10, 
-         paddingVertical: 5,
-         borderRadius: 20
+          style={{ 
+            flexDirection: "row",
+            alignItems: "center", 
+            gap: 10, 
+            borderWidth: 1,
+            borderColor: iconColor,
+            paddingHorizontal: 10, 
+            paddingVertical: 5,
+            borderRadius: 20
           }}>
           <Fontisto name="date" size={16} color={iconColor} />
           <ThemedText style={{fontSize: 16}}>Newest</ThemedText>
@@ -59,48 +57,60 @@ export default function Recents() {
 
       {/* FlatList */}
       <FlatList
-        data={data}
-        keyExtractor={(item) => item.id}
+        data={sessions}
+        keyExtractor={(item) => item.entryId}
         style={{ marginTop: 20 }}
         renderItem={({ item }) => (
-          <ThemedView
-          darkColor="#232627"
-            style={{
-              width: '100%',
-              height: 125,
-              borderRadius: 15,
-              padding: 16,
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: 16,
-            }}
+          <TouchableOpacity
+            onPress={() => handleSessionPress(item.entryId)}
+            activeOpacity={0.8}
           >
-            <Image
-              source={item.icon}
+            <ThemedView
+              darkColor="#232627"
               style={{
-                width: 64,
-                height: 64,
-                borderRadius: 24,
-                marginRight: 16,
+                width: '100%',
+                height: 125,
+                borderRadius: 15,
+                padding: 16,
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: 16,
               }}
-            />
-            <View style={{ flex: 1 }}>
-              <ThemedText style={{ color: "white", fontSize: 16 }}>
-                {item.title}
-              </ThemedText>
-              <View
+            >
+              <Image
+                source={require("../../assets/images/icon1.png")}
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: 4,
+                  width: 64,
+                  height: 64,
+                  borderRadius: 24,
+                  marginRight: 16,
                 }}
-              >
-                <ThemedText style={{ color: "#aaa", fontSize: 14 }}>
-                  {item.emoji} {item.mood}
+              />
+              <View style={{ flex: 1 }}>
+                <ThemedText 
+                  style={{ 
+                    color: "white", 
+                    fontSize: 16,
+                    marginBottom: 8 
+                  }}
+                  numberOfLines={2}
+                >
+                  {item?.messages?.[0]?.content || 'No message content'}
                 </ThemedText>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginTop: 4,
+                  }}
+                >
+                  <ThemedText style={{ color: "#aaa", fontSize: 14 }}>
+                    {formatDate(item.sessionEndTime)}
+                  </ThemedText>
+                </View>
               </View>
-            </View>
-          </ThemedView>
+            </ThemedView>
+          </TouchableOpacity>
         )}
       />
     </View>

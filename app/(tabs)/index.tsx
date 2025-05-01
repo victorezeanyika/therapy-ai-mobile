@@ -67,7 +67,7 @@ export default function HomeScreen() {
           </View>
           <MoodLineChart data={chartData} />
           <ThemedText style={styles.cardTitle}>
-          Over the past week, your mood has been generally positive, with a slight dip occurring around mid-week. This temporary decline may be linked to increased stress levels reported during that time. Read More
+            {dashboardData?.chatSessions[0]?.summary}
           </ThemedText>
           <UpcommingSession />
         </ThemedView>
