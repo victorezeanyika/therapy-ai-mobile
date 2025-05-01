@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import JournalEntry from './journalentry';
 import { JournalEntry as JournalEntryType } from '@/features/journal-api';
 import { ThemedText } from '@/components/ThemedText';
@@ -8,11 +8,24 @@ import { Colors } from '@/constants/Colors';
 interface JournalListProps {
   journals: JournalEntryType[];
   onEdit: (entry: JournalEntryType) => void;
+  onDelete: (entry: JournalEntryType) => void;
   onCancelEdit?: () => void;
   isEditing?: boolean;
+  onEndReached?: () => void;
+  isLoading?: boolean;
+  hasMore?: boolean;
 }
 
-export default function JournalList({ journals, onEdit, onCancelEdit, isEditing }: JournalListProps) {
+export default function JournalList({ 
+  journals, 
+  onEdit, 
+  onDelete,
+  onCancelEdit,
+  isEditing = false,
+  onEndReached,
+  isLoading = false,
+  hasMore = false 
+}: JournalListProps) {
   const PAGE_SIZE = 2;
   const [currentPage, setCurrentPage] = useState(0);
   
@@ -22,11 +35,21 @@ export default function JournalList({ journals, onEdit, onCancelEdit, isEditing 
     (currentPage + 1) * PAGE_SIZE
   );
 
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <ThemedText type="defaultSemiBold">Previous Entries</ThemedText>
-        {isEditing && (
+        <ThemedText style={styles.headerTitle} type="defaultSemiBold">Previous Entries</ThemedText>
+        {isEditing && onCancelEdit && (
           <TouchableOpacity 
             onPress={onCancelEdit}
             style={styles.cancelButton}
@@ -35,17 +58,30 @@ export default function JournalList({ journals, onEdit, onCancelEdit, isEditing 
           </TouchableOpacity>
         )}
       </View>
-      {displayedJournals.map((journal) => (
-        <JournalEntry
-          key={journal.entryId}
-          entryId={journal.entryId}
-          title={journal.title}
-          content={journal.content}
-          date={journal.createdAt || new Date().toISOString()}
-          tags={journal.tags || []}
-          onEdit={onEdit}
-        />
-      ))}
+      <View style={styles.entriesContainer}>
+        {displayedJournals.map((journal) => (
+          <JournalEntry
+            key={journal.entryId}
+            entryId={journal.entryId}
+            title={journal.title}
+            content={journal.content}
+            date={formatDate(journal.createdAt || new Date().toISOString())}
+            tags={journal.tags || []}
+            onEdit={() => onEdit(journal)}
+            onDelete={() => onDelete(journal)}
+          />
+        ))}
+        {hasMore && (
+          <View style={styles.loadingContainer}>
+            {isLoading && (
+              <View style={styles.loadingContent}>
+                <ActivityIndicator size="small" color={Colors.harmony.primary} />
+                <ThemedText style={styles.loadingText}>Loading more entries...</ThemedText>
+              </View>
+            )}
+          </View>
+        )}
+      </View>
       {totalPages > 1 && (
         <View style={styles.paginationContainer}>
           <TouchableOpacity 
@@ -82,6 +118,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  headerTitle: {
+    fontSize: 20,
+    color: Colors.harmony.primary,
+  },
   cancelButton: {
     backgroundColor: Colors.harmony.primary,
     paddingHorizontal: 12,
@@ -91,6 +131,23 @@ const styles = StyleSheet.create({
   cancelButtonText: {
     color: '#fff',
     fontSize: 14,
+  },
+  entriesContainer: {
+    gap: 16,
+  },
+  loadingContainer: {
+    height: 16,
+  },
+  loadingContent: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    gap: 8,
+  },
+  loadingText: {
+    fontSize: 14,
+    opacity: 0.7,
   },
   paginationContainer: {
     flexDirection: 'row',

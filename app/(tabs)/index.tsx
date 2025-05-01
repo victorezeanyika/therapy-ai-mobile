@@ -12,6 +12,7 @@ import { useAppSelector } from '@/features/hooks';
 import { ThemedText } from '@/components/ThemedText';
 import { useGetDashboardQuery } from '@/features/journal-api';
 import UpcommingSession from '@/components/upcoming-session';
+import TherapySessions from '@/components/therapy-sessions';
 
 
 export default function HomeScreen() {
@@ -66,14 +67,21 @@ export default function HomeScreen() {
             </View>
           </View>
           <MoodLineChart data={chartData} />
-          <ThemedText style={styles.cardTitle}>
+
+          {/* <UpcommingSession /> */}
+
+          <View style={{ marginVertical: 24 }}>
+            <UpcommingSession />
+          </View>
+
+          {/* <ThemedText style={styles.cardTitle}>
             {dashboardData?.chatSessions[0]?.summary}
-          </ThemedText>
-          <UpcommingSession />
+          </ThemedText> */}
+          <TherapySessions chatSessions={dashboardData?.chatSessions || []} />
         </ThemedView>
 
         {/* Monthly Goals */}
-        <ThemedView 
+        {/* <ThemedView 
         lightColor="#FFFFFF"
         darkColor="#232627"
         style={styles.card}>
@@ -117,7 +125,7 @@ export default function HomeScreen() {
               style={styles.progressBar}
             />
           </View>
-        </ThemedView>
+        </ThemedView> */}
       </ScrollView>
       </ThemedView>
   );

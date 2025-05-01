@@ -5,15 +5,19 @@ export const subscriptionsApi = apiSlice.injectEndpoints({
         getSubscriptions: builder.query<any, void>({
             query: () => '/subscription/plans?lang=en',
         }),
-        createPaymentIntent: builder.mutation<any, {plan: string, email: string}>({
-            query: ({plan, email}: {plan: string, email: string}) => ({
+        createPaymentIntent: builder.mutation<any, {plan: string, email: string, billingPeriod: "monthly" | "annual"}>({  
+            query: ({plan, email, billingPeriod}: {plan: string, email: string, billingPeriod: "monthly" | "annual"}) => ({
                 url: '/subscription/create',
                 method: 'POST',
-                body: { email, plan  },
+                body: { 
+                    email,
+                    plan, // Remove the toUpperCase() to send the plan name as-is
+                    billingPeriod 
+                },
             }),
         }),
-
     }),
+    overrideExisting: true
 }); 
 
 export const { 

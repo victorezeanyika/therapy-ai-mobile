@@ -1,5 +1,5 @@
 import { Fontisto } from "@expo/vector-icons";
-import { FlatList, View, Image, TouchableOpacity } from "react-native";
+import { FlatList, View, Image, TouchableOpacity, Text } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedView } from "../ThemedView";
@@ -9,10 +9,6 @@ import { router } from "expo-router";
 
 export default function Recents({sessions}: {sessions: any}) {
   const iconColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'icon');
-  // const { data } = useGetAllSessionsBasicQuery();
-  // const sessions = data?.sessions;
-  // console.log(data, 'sessions');
-  // console.log(sessions, 'sessions');
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -29,33 +25,28 @@ export default function Recents({sessions}: {sessions: any}) {
 
   return (
     <View style={{ flex: 1, paddingHorizontal: 30 }}>
-      {/* Top Header */}
-      <View
-        style={{
-          alignItems: "center",
-          justifyContent: "space-between",
+      <View style={{
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexDirection: "row",
+        marginTop: 32,
+      }}>
+        <ThemedText><Text>Recent ({sessions?.length})</Text></ThemedText>
+        <View style={{ 
           flexDirection: "row",
-          marginTop: 32,
-        }}
-      >
-        <ThemedText>Recent ({sessions?.length})</ThemedText>
-        <View 
-          style={{ 
-            flexDirection: "row",
-            alignItems: "center", 
-            gap: 10, 
-            borderWidth: 1,
-            borderColor: iconColor,
-            paddingHorizontal: 10, 
-            paddingVertical: 5,
-            borderRadius: 20
-          }}>
+          alignItems: "center", 
+          gap: 10, 
+          borderWidth: 1,
+          borderColor: iconColor,
+          paddingHorizontal: 10, 
+          paddingVertical: 5,
+          borderRadius: 20
+        }}>
           <Fontisto name="date" size={16} color={iconColor} />
-          <ThemedText style={{fontSize: 16}}>Newest</ThemedText>
+          <ThemedText style={{fontSize: 16}}><Text>Newest</Text></ThemedText>
         </View>
       </View>
 
-      {/* FlatList */}
       <FlatList
         data={sessions}
         keyExtractor={(item) => item.entryId}
@@ -95,17 +86,15 @@ export default function Recents({sessions}: {sessions: any}) {
                   }}
                   numberOfLines={2}
                 >
-                  {item?.messages?.[0]?.content || 'No message content'}
+                  <Text>{item?.messages?.[0]?.content || 'No message content'}</Text>
                 </ThemedText>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginTop: 4,
-                  }}
-                >
+                <View style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: 4,
+                }}>
                   <ThemedText style={{ color: "#aaa", fontSize: 14 }}>
-                    {formatDate(item.sessionEndTime)}
+                    <Text>{formatDate(item.sessionEndTime)}</Text>
                   </ThemedText>
                 </View>
               </View>

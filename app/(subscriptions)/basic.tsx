@@ -46,12 +46,15 @@ export default function BasicPlanScreen() {
 
   const handlePay = async (planKey: string) => {
     try {
+      // For debugging - log the exact values being sent
+      console.log(`Attempting to create payment intent for: ${planKey}, period: ${billingPeriod}`);
+      
       const response = await createPaymentIntent({
         email: user?.email,
-        plan: planKey,
+        plan: planKey,  // Keep original case
         billingPeriod,
       }).unwrap();
-
+  
       if (response?.sessionUrl) {
         router.push({
           pathname: "/checkout-screen",
@@ -62,7 +65,10 @@ export default function BasicPlanScreen() {
       }
     } catch (error) {
       console.error("Payment error:", error);
-      Alert.alert("Payment Error", "Failed to initiate payment.");
+      // Log more details about the error
+      console.log("Error data:", JSON.stringify(error?.data || {}));
+      const errorMessage = error?.data?.error || "Failed to initiate payment.";
+      Alert.alert("Payment Error", errorMessage);
     }
   };
 
@@ -264,7 +270,6 @@ export default function BasicPlanScreen() {
             billingPeriod === "monthly" && styles.periodButtonActive,
           ]}
           onPress={() => setBillingPeriod("monthly")}
-          disabled={hasActiveSubscription}
         >
           <Text
             style={[
@@ -281,7 +286,6 @@ export default function BasicPlanScreen() {
             billingPeriod === "annual" && styles.periodButtonActive,
           ]}
           onPress={() => setBillingPeriod("annual")}
-          disabled={hasActiveSubscription}
         >
           <Text
             style={[
@@ -396,12 +400,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8FAFF",
     padding: 10,
     borderRadius: 10.9,
+    paddingRight: 40,
   },
   check: {
     width: 24,
     height: 24,
     position: "absolute",
-    right: -20,
+    right: 10,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 12,
@@ -491,16 +496,16 @@ const styles = StyleSheet.create({
     fontFamily: "Gotham-Book",
   },
   disabledCard: {
-    opacity: 0.7,
+    opacity: 0.8,
   },
   disabledBadge: {
     backgroundColor: "#999",
   },
   disabledContent: {
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#f8f8f8",
   },
   disabledFeatureItem: {
-    backgroundColor: "#eee",
+    backgroundColor: "#f5f5f5",
   },
   disabledBullet: {
     borderColor: "#999",
@@ -509,7 +514,7 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   disabledCheck: {
-    backgroundColor: "#999",
+    backgroundColor: "#aaa",
   },
   disabledButton: {
     backgroundColor: "#999",

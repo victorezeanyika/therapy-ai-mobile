@@ -15,6 +15,7 @@ interface JournalEntryProps {
   entryId: string | undefined;
   tags: string[];
   onEdit: (entry: JournalEntryType) => void;
+  onDelete: () => void;
 }
 
 export default function JournalEntry({ title, content, date, entryId, tags, onEdit }: JournalEntryProps) {
