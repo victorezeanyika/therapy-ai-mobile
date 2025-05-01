@@ -76,13 +76,13 @@ export default function AssessmentScreen({ navigation }: any) {
       const preferences = getValues();
       console.log({ preferences });
       router.push('/(auth)'); // Or show confirmation screen
-      // try {
-      //   const res = await submitUserPreference(preferences).unwrap()
-      //   success("works")
-      //   console.log(res);
-      // } catch (error) {
-      //   toastError("Something went wrong.")
-      // }
+      try {
+        const res = await submitUserPreference(preferences).unwrap()
+        success("Your preferences have been saved successfully")
+        console.log(res);
+      } catch (error) {
+        toastError("Something went wrong.")
+      }
     }
   };
 

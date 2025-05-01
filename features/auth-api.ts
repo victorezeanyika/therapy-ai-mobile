@@ -2,10 +2,10 @@ import { IUser } from "@/types";
 import apiSlice from "./api-slice";
 
 interface Preferences {
-  notifications: boolean;
-  theme: 'light' | 'dark';
-  language: string;
-  reminderFrequency: 'daily' | 'weekly' | 'monthly';
+  primaryConcern: string;
+  therapyExperience: string;
+  preferredApproach: string;
+  communicationStyle: string;
 }
 
 interface LoginRequest {
@@ -102,7 +102,14 @@ export const authApi = apiSlice.injectEndpoints({
       query: (preferences) => ({
         url: '/auth/users/preferences',
         method: 'POST',
-        body: preferences,
+        body: {
+          preferences: {
+            primaryConcern: preferences.primaryConcern,
+            therapyExperience: preferences.therapyExperience,
+            preferredApproach: preferences.preferredApproach,
+            communicationStyle: preferences.communicationStyle
+          }
+        },
       }),
     }),
     googleAuth: builder.mutation<LoginResponse, { token: string }>({

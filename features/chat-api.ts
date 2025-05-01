@@ -24,9 +24,9 @@ export const chatApi = apiSlice.injectEndpoints({
         }),
         sendMessage: builder.mutation<any, any>({
             query: ({message, sessionId}) => ({
-                url: '/chat/message',
+                url: `/chat/session/${sessionId}/message`,
                 method: 'POST',
-                body: {message, sessionId},
+                body: {message},
             }),
         }),
     }),

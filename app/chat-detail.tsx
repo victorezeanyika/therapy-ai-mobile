@@ -7,6 +7,7 @@ import { ThemedView } from '@/components/ThemedView';
 import TopHeader from '@/components/TopHeader';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useCreateSessionMutation, useSendMessageMutation, useGetSessionByIdQuery } from '@/features/chat-api';
+import { useToast } from '@/context/toast-context';
 
 interface ChatMessage {
   sender: 'user' | 'bot';
@@ -15,6 +16,7 @@ interface ChatMessage {
 }
 
 export default function ChatScreen() {
+  const { toastError, success } = useToast();
   const { sessionId: paramSessionId } = useLocalSearchParams<{ sessionId: string }>();
   const [createSession, { isLoading: isCreatingSession }] = useCreateSessionMutation();
   const [sendMessageMutation, { isLoading: isSendingMessage }] = useSendMessageMutation();
@@ -46,6 +48,7 @@ export default function ChatScreen() {
 
       try {
         const response = await createSession().unwrap();
+        success("Session created successfully")
         setSessionId(response.entryId);
         // Set initial message from the session response
         if (response.messages && response.messages.length > 0) {
@@ -58,6 +61,7 @@ export default function ChatScreen() {
         }
       } catch (error) {
         console.error('Failed to create session:', error);
+        toastError("you are not able to start a new session, please upgrade your plan.")
         const errorMessage = { 
           sender: 'bot' as const, 
           text: "I apologize, but I'm having trouble starting our session. Could you please try again?",
@@ -104,7 +108,7 @@ export default function ChatScreen() {
     }
   };
 
-  if (isLoadingSession) {
+  if (isLoadingSession || isCreatingSession) {
     return (
       <ThemedView style={styles.container}>
         <TopHeader title="Serentis" />

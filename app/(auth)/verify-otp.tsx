@@ -53,7 +53,7 @@ export default function VerifyOtp() {
         if (userProfile) {
           dispatch(setCredentials({ user: userProfile, accessToken: result.accessToken }));
           // Check if user has completed preferences
-          if (!userProfile.preferences?.primaryConcern) {
+          if (userProfile && !userProfile.preferences?.primaryConcern) {
             // Redirect to assessment if no primary concern is set
             router.replace('/(auth)/assessment');
           } else {
