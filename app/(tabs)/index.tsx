@@ -13,10 +13,10 @@ import { ThemedText } from '@/components/ThemedText';
 import { useGetDashboardQuery } from '@/features/journal-api';
 import UpcommingSession from '@/components/upcoming-session';
 import TherapySessions from '@/components/therapy-sessions';
-
+import { useGetSubscriptionStatusQuery } from '@/features/subscriptions-api';
 
 export default function HomeScreen() {
-
+  const { data: subscriptionStatus } = useGetSubscriptionStatusQuery();
   const { user } = useAppSelector(state => state.auth);
   const { data: dashboardData } = useGetDashboardQuery();
   const weekDays = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -40,7 +40,9 @@ export default function HomeScreen() {
       completed: false
     }
   ];
-  console.log(dashboardData, 'dashboardData')
+  const moodsData = dashboardData?.moodData?.moods as any;
+  console.log(moodsData, 'moodsData')
+  
 
   return (
       <ThemedView style={styles.container}>
@@ -51,7 +53,7 @@ export default function HomeScreen() {
         {/* Header */}
        <Header  name={user?.name}/>
         {/* Upgrade Card */}
-       <Upgrade />
+        {!subscriptionStatus  && <Upgrade />}
 
         {/* Mood Chart */}
         <ThemedView style={styles.card}>
@@ -66,7 +68,9 @@ export default function HomeScreen() {
               <ThemedText style={styles.legendText}>Sad</ThemedText>
             </View>
           </View>
-          <MoodLineChart data={chartData} />
+          <MoodLineChart 
+          data={chartData}
+           />
 
           {/* <UpcommingSession /> */}
 

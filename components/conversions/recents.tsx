@@ -58,6 +58,7 @@ export default function Recents({sessions}: {sessions: any}) {
           >
             <ThemedView
               darkColor="#232627"
+              lightColor="#FFFFFF"
               style={{
                 width: '100%',
                 height: 125,
@@ -80,7 +81,6 @@ export default function Recents({sessions}: {sessions: any}) {
               <View style={{ flex: 1 }}>
                 <ThemedText 
                   style={{ 
-                    color: "white", 
                     fontSize: 16,
                     marginBottom: 8 
                   }}
@@ -93,7 +93,7 @@ export default function Recents({sessions}: {sessions: any}) {
                   alignItems: "center",
                   marginTop: 4,
                 }}>
-                  <ThemedText style={{ color: "#aaa", fontSize: 14 }}>
+                  <ThemedText style={{ fontSize: 14 }}>
                     <Text>{formatDate(item.sessionEndTime)}</Text>
                   </ThemedText>
                 </View>

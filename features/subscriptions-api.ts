@@ -5,6 +5,9 @@ export const subscriptionsApi = apiSlice.injectEndpoints({
         getSubscriptions: builder.query<any, void>({
             query: () => '/subscription/plans?lang=en',
         }),
+        getSubscriptionStatus: builder.query<any, void>({
+            query: () => '/subscription/status',
+        }),
         createPaymentIntent: builder.mutation<any, {plan: string, email: string, billingPeriod: "monthly" | "annual"}>({  
             query: ({plan, email, billingPeriod}: {plan: string, email: string, billingPeriod: "monthly" | "annual"}) => ({
                 url: '/subscription/create',
@@ -23,4 +26,5 @@ export const subscriptionsApi = apiSlice.injectEndpoints({
 export const { 
     useGetSubscriptionsQuery,
     useCreatePaymentIntentMutation,
+    useGetSubscriptionStatusQuery,
  } = subscriptionsApi;

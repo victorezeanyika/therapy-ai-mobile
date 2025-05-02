@@ -6,6 +6,7 @@ export default function TopHeader({title}:{title:string}){
     return (
         <View
          style={{
+            
             justifyContent:'space-between',
             alignItems:'center',
             flexDirection:'row',

@@ -10,6 +10,28 @@ export interface JournalEntry {
     createdAt?: string;
 }
 
+export interface DashboardData {
+    moodData: {
+        moods: Array<{
+            rating: number;
+            note: string;
+            tags: string[];
+            triggers: string[];
+            createdAt: string;
+            aiAnalysis?: {
+                aiAnalysis: any;
+                createdAt: string;
+                entryId: string;
+                note: string;
+                rating: number;
+                tags: string[];
+                triggers: string[];
+            };
+        }>;
+    };
+    journalEntries: JournalEntry[];
+}
+
 export const journalApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getJournalEntries: builder.query<JournalEntry[], void>({
@@ -18,7 +40,7 @@ export const journalApi = apiSlice.injectEndpoints({
         getActivities: builder.query<JournalEntry[], void>({
             query: () => '/activities/recommended',
         }),
-        getDashboard: builder.query<JournalEntry[], void>({
+        getDashboard: builder.query<DashboardData, void>({
             query: () => '/dashboard',
         }),
         addJournalEntry: builder.mutation<JournalEntry, JournalEntry>({
