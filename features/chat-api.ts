@@ -33,7 +33,7 @@ export const chatApi = apiSlice.injectEndpoints({
                 url: `/chat/session/${sessionId}/message`,
                 method: 'POST',
                 body: {
-                    message,
+                    content: message,
                     sessionId,
                 },
             }),

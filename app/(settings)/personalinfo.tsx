@@ -28,7 +28,6 @@ export default function PersonalInfo() {
   const {user:userDetails} = useAppSelector(state => state.auth);
   const [updateProfile, { isLoading: isUpdate }] = useUpdateProfileMutation();
   const [showDatePicker, setShowDatePicker] = useState(false);
-  console.log(userDetails, 'this is the user details');
 
   const {
     control,

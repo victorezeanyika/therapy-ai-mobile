@@ -6,8 +6,6 @@ import { ThemedView } from '@/components/ThemedView';
 
 const CheckoutScreen = () => {
   const { url:sessionUrl } = useLocalSearchParams();
-
-  console.log(sessionUrl, 'fdf')
   if (!sessionUrl) {
     return (
       <ThemedView style={styles.container}>

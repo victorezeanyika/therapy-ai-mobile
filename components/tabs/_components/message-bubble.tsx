@@ -1,11 +1,13 @@
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
-import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Markdown from 'react-native-markdown-display';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Speech from 'expo-speech';
 
 interface MessageBubbleProps {
-  message: { 
+  message: {
     sender: string; 
     text: string;
     timestamp: string;
@@ -14,7 +16,24 @@ interface MessageBubbleProps {
 
 export default function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.sender === 'user';
-  console.log(message, 'message');
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handlePlayVoice = async () => {
+    if (isPlaying) {
+      await Speech.stop();
+      setIsPlaying(false);
+      return;
+    }
+
+    setIsPlaying(true);
+    await Speech.speak(message.text, {
+      onDone: () => setIsPlaying(false),
+      onError: () => setIsPlaying(false),
+      language: 'en-US',
+      pitch: 1.0,
+      rate: 0.9,
+    });
+  };
 
   return (
     <View style={[styles.row, isUser ? styles.userRow : styles.botRow]}>
@@ -34,6 +53,18 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
               {message.timestamp}
             </Text>
           </View>
+          {!isUser && (
+            <TouchableOpacity 
+              style={styles.voiceButton} 
+              onPress={handlePlayVoice}
+            >
+              <MaterialCommunityIcons 
+                name={isPlaying ? "stop-circle" : "play-circle"} 
+                size={24} 
+                color={isUser ? '#FFFFFF' : Colors.harmony.primary} 
+              />
+            </TouchableOpacity>
+          )}
         </View>
         <Markdown
           style={{
@@ -93,7 +124,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignSelf: 'flex-end',
     maxWidth: '85%',
-    
   },
   header: {
     flexDirection: 'row',
@@ -130,11 +160,6 @@ const styles = StyleSheet.create({
   bubble: {
     padding: 12,
     borderRadius: 16,
-    // shadowColor: '#000',
-    // shadowOffset: { width: 0, height: 1 },
-    // shadowOpacity: 0.08,
-    // shadowRadius: 2,
-    // elevation: 2,
   },
   userBubble: {
     backgroundColor: Colors.harmony.primary,
@@ -156,5 +181,9 @@ const styles = StyleSheet.create({
     fontFamily: 'Gotham-Medium',
     fontSize: 14,
     lineHeight: 20,
+  },
+  voiceButton: {
+    marginLeft: 8,
+    padding: 4,
   },
 });

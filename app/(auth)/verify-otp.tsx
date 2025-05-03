@@ -24,7 +24,6 @@ export default function VerifyOtp() {
   const dispatch = useDispatch();
   const { refetch: refetchProfile } = useGetProfileQuery();
   const { user } = useAppSelector(state => state.auth);
-  console.log(user, 'user');
   const handleChange = (text: string, index: number) => {
     const newOtp = [...otp];
     newOtp[index] = text;
@@ -42,9 +41,7 @@ export default function VerifyOtp() {
     if (code.length === 6) {
       Keyboard.dismiss();
       try {
-        const result = await verifyOtp({ email, otp: code }).unwrap();
-        console.log(result, 'result');
-        
+        const result = await verifyOtp({ email, otp: code }).unwrap();        
         // Save access token
         await AsyncStorage.setItem('accessToken', result.accessToken);
         

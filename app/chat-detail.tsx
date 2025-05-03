@@ -15,6 +15,20 @@ interface ChatMessage {
   timestamp: string;
 }
 
+interface SendMessageResponse {
+  userMessage: {
+    role: string;
+    content: string;
+    timestamp: string;
+  };
+  aiMessage: {
+    role: string;
+    content: string;
+    timestamp: string;
+  };
+  remainingMinutes: number;
+}
+
 export default function ChatScreen() {
   const { error: toastError, success } = useToast();
   const { sessionId: paramSessionId } = useLocalSearchParams<{ sessionId: string }>();
@@ -43,7 +57,7 @@ export default function ChatScreen() {
       }));
       setMessages(formattedMessages);
     }
-  }, [existingSession]);
+  }, [existingSession, paramSessionId]);
 
   useEffect(() => {
     const initializeNewSession = async () => {
@@ -108,7 +122,6 @@ export default function ChatScreen() {
 
   const handleSendMessage = async (textToSend: string) => {
     if (!textToSend.trim() || !sessionId || !isSessionActive) return;
-
     const userMessage = { 
       sender: 'user' as const, 
       text: textToSend,
@@ -123,10 +136,13 @@ export default function ChatScreen() {
         sessionId: sessionId
       }).unwrap();
 
+      // Update timer with server's remaining minutes
+      setTimeLeft(response.remainingMinutes * 60);
+
       const botMessage = { 
         sender: 'bot' as const, 
-        text: response.message,
-        timestamp: new Date().toLocaleString()
+        text: response.aiMessage.content,
+        timestamp: new Date(response.aiMessage.timestamp).toLocaleString()
       };
       setMessages(prev => [...prev, botMessage]);
       success("Message sent successfully");

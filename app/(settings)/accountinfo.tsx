@@ -64,7 +64,6 @@ export function SettingCard({ title, sub, icon, link , red}: SettingCardProps) {
     if (link === "Logout") {
       // Handle logout logic
       
-      console.log("Logging out...");
     } else {
       router.push(link as never);
     }
