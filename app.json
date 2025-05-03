@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.kidscantech.TherapyAi",
+      "bundleIdentifier": "com.serentis.TherapyAi",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -20,7 +20,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.kidscantech.TherapyAi"
+      "package": "com.serentis.TherapyAi"
     },
     "web": {
       "bundler": "metro",
