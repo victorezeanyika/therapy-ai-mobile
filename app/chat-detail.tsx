@@ -160,6 +160,13 @@ export default function ChatScreen() {
   const handleEndSession = async () => {
     if (!sessionId) return;
 
+    // Calculate if 30 minutes have passed
+    const minutesPassed = Math.floor((60 * 60 - timeLeft) / 60);
+    if (minutesPassed < 30) {
+      toastError("You must wait at least 30 minutes before ending the session");
+      return;
+    }
+
     Alert.alert(
       "End Session",
       "Are you sure you want to end this session?",
@@ -207,9 +214,9 @@ export default function ChatScreen() {
             Session ends in: {formatTime(timeLeft)}
           </Text>
           <TouchableOpacity 
-            style={styles.endSessionButton}
+            style={[styles.endSessionButton, (timeLeft > 30 * 60) && styles.endSessionButtonDisabled]}
             onPress={handleEndSession}
-            disabled={!isSessionActive}
+            disabled={!isSessionActive || timeLeft > 30 * 60}
           >
             <MaterialCommunityIcons name="close-circle" size={24} color="white" />
           </TouchableOpacity>
@@ -291,6 +298,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  endSessionButtonDisabled: {
+    backgroundColor: '#666',
+    opacity: 0.5,
   },
   inputContainer: {
     flexDirection: 'row',

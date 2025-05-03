@@ -5,6 +5,8 @@ import { useState } from "react";
 import { useGetDashboardQuery, DashboardData } from "@/features/journal-api";
 import { ThemedView } from "../ThemedView";
 import { Colors } from "@/constants/Colors";
+import { summaryText } from "@/constants";
+import MoodSummary from "./mood-summary";
 
 interface MoodEntry {
   rating: number;
@@ -32,7 +34,7 @@ const moodLabels = {
   0: "Disgust"
 } as const;
 
-const MoodLineChart = () => {
+const MoodLineChart = ({ analysis }: { analysis: any }) => {
   const cardBg = useThemeColor({ light: '#FFFFFF', dark: '#232627' }, 'background');
   const labelColor = useThemeColor({ dark: '#FFFFFF', light: '#232627' }, 'text');
   const [selectedPoint, setSelectedPoint] = useState<null | {
@@ -46,6 +48,16 @@ const MoodLineChart = () => {
   const { data: dashboardData, isLoading, error } = useGetDashboardQuery();
   const moodEntries = dashboardData?.moodData?.moods || [];
 
+  // Get the appropriate summary text based on the selected time period
+  const getSummaryText = () => {
+    if (showLast30Days) {
+      return analysis?.monthly || "No monthly summary available";
+    } else {
+      return analysis?.weekly || "No weekly summary available";
+    }
+  };
+
+  
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -53,7 +65,6 @@ const MoodLineChart = () => {
       </View>
     );
   }
-
   if (error) {
     return (
       <View style={styles.errorContainer}>
@@ -65,23 +76,19 @@ const MoodLineChart = () => {
   const sortedMoodEntries = [...moodEntries].sort(
     (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
   );
-
   const filteredData = sortedMoodEntries.filter((mood) => {
     const daysAgo = new Date();
     daysAgo.setDate(daysAgo.getDate() - (showLast30Days ? 30 : 7));
     return new Date(mood.createdAt) >= daysAgo;
   });
-
   const formatDate = (date: string) => {
     const d = new Date(date);
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
-
   const formatTime = (date: string) => {
     const d = new Date(date);
     return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
   };
-
   const chartHeight = 208;
   const yAxisHeight = chartHeight - 40;
 
@@ -114,6 +121,7 @@ const MoodLineChart = () => {
             No mood data available for the {showLast30Days ? 'last 30 days' : 'last 7 days'}
           </Text>
         </View>
+        <MoodSummary text={getSummaryText()} />
       </View>
     );
   }
@@ -186,6 +194,9 @@ const MoodLineChart = () => {
           </Text>
         </ThemedView>
       )}
+
+      {/* Show summary text */}
+      <MoodSummary text={getSummaryText()} />
 
       {/* Toggle Last 7 / 30 Days */}
     

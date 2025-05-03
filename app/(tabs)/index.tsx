@@ -40,7 +40,8 @@ export default function HomeScreen() {
     }
   ];
   const moodsData = dashboardData?.moodData?.moods as any;
-  console.log(moodsData, 'moodsData')
+  const analysis = dashboardData?.moodData?.analysis as any;
+  console.log(analysis, 'moodsData')
   
 
   return (
@@ -57,7 +58,9 @@ export default function HomeScreen() {
         {/* Mood Chart */}
         <ThemedView style={styles.card}>
           <ThemedText style={styles.cardTitle}>Mood Tracking</ThemedText>
-          <MoodLineChart />
+          <MoodLineChart
+          analysis={analysis}
+          />
           <View style={{ marginVertical: 24 }}>
             <UpcommingSession />
           </View>

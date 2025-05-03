@@ -30,7 +30,7 @@ export default function MoodJournalScreen({ navigation }: { navigation: NativeSt
   const [updateMood, { isLoading: isUpdating }] = useUpdateMoodEntryMutation();
   const { data, refetch, isLoading } = useGetMoodEntriesQuery();
   const { success, error: toastError } = useToast();
-  // const analysis = data?.analysis || [];
+  const analysis = data?.analysis || [];
   // console.log(analysis, 'any analysis');
   const moods = data?.moods as any || [];
 
@@ -107,12 +107,9 @@ export default function MoodJournalScreen({ navigation }: { navigation: NativeSt
       contentContainerStyle={styles.scrollContent}
       showsVerticalScrollIndicator={false}
       >
-        <MoodTabSwitcher 
-        selected={tab} 
-        onSelect={setTab}
-        />
-        <MoodLineChart data={chartData} />
-        <MoodSummary text={summaryText} />
+      <MoodLineChart
+       analysis={analysis}
+      />
         <ThemedText style={styles.sectionTitle}>How are you feeling today?</ThemedText>
         <MoodSelector moods={moodOptions} onSelect={handleMoodSelect} />
         <MoodWheel onSelect={handleMoodSelect} />  
