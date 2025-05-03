@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignSelf: 'flex-end',
     maxWidth: '85%',
+    
   },
   header: {
     flexDirection: 'row',
@@ -138,6 +139,7 @@ const styles = StyleSheet.create({
   userBubble: {
     backgroundColor: Colors.harmony.primary,
     borderBottomRightRadius: 4,
+    width: '80%',
   },
   botBubble: {
     backgroundColor: '#FFFFFF',

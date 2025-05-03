@@ -2,6 +2,7 @@ import { View, StyleSheet } from 'react-native';
 import { ThemedText } from './ThemedText';
 import { ThemedView } from './ThemedView';
 import Markdown from 'react-native-markdown-display';
+import { useThemeColor } from '@/hooks/useThemeColor';
 
 interface TherapySessionsProps {
   chatSessions: Array<{
@@ -11,6 +12,8 @@ interface TherapySessionsProps {
 }
 
 export default function TherapySessions({ chatSessions }: TherapySessionsProps) {
+  const textColor = useThemeColor({ light: '#232', dark: '#fff' }, 'background');
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -31,8 +34,14 @@ export default function TherapySessions({ chatSessions }: TherapySessionsProps) 
           <ThemedText style={styles.dateText}>
             Session on {formatDate(session.createdAt)}
           </ThemedText>
-          <Markdown style={{
-            body: styles.summaryText
+          <Markdown 
+          style={{
+            body: {
+              color: textColor,
+              fontSize: 14,
+              fontFamily: 'Gotham-Medium'
+            },
+            // color: '#000'
           }}>
             {session.summary}
           </Markdown>
@@ -62,11 +71,7 @@ const styles = StyleSheet.create({
     color: '#2a9d8f',
     marginBottom: 8,
   },
-  summaryText: {
-    fontSize: 14,
-    lineHeight: 30,
-    color: '#fff',
-  },
+
   emptyText: {
     fontSize: 14,
     color: '#fff',

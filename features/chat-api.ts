@@ -22,11 +22,20 @@ export const chatApi = apiSlice.injectEndpoints({
                 method: 'POST',
             }),
         }),
+        endSession: builder.mutation<any, string>({
+            query: (sessionId) => ({
+                url: `/chat/session/${sessionId}/end`,
+                method: 'POST',
+            }),
+        }),
         sendMessage: builder.mutation<any, any>({
             query: ({message, sessionId}) => ({
                 url: `/chat/session/${sessionId}/message`,
                 method: 'POST',
-                body: {message},
+                body: {
+                    message,
+                    sessionId,
+                },
             }),
         }),
     }),
@@ -39,6 +48,7 @@ export const {
     useGetAllSessionsQuery,
     useGetSessionByIdQuery,
     useGetAllSessionsBasicQuery,
+    useEndSessionMutation,
  } = chatApi;
 
 export default chatApi;

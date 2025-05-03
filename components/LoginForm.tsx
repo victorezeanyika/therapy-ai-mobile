@@ -40,7 +40,7 @@ export default function LoginForm() {
     try {
       const result = await login(data).unwrap();
       success('Login successful');
-      router.replace({ pathname: '/(auth)/verify-otp', params: { email: data.email } });
+      router.push({ pathname: '/(auth)/verify-otp', params: { email: data.email } });
     } catch (error: any) {
       toastError(error?.data?.message ||
         error?.data?.error ||

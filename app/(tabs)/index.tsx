@@ -7,7 +7,6 @@ import Header from '../../components/tabs/_components/header';
 import Upgrade from '../../components/tabs/_components/upgrade';
 import { ThemedView } from '@/components/ThemedView';
 import MoodLineChart from '@/components/moods/mood-line-chart';
-import { chartData } from '@/constants';
 import { useAppSelector } from '@/features/hooks';
 import { ThemedText } from '@/components/ThemedText';
 import { useGetDashboardQuery } from '@/features/journal-api';
@@ -58,22 +57,7 @@ export default function HomeScreen() {
         {/* Mood Chart */}
         <ThemedView style={styles.card}>
           <ThemedText style={styles.cardTitle}>Mood Tracking</ThemedText>
-          <View style={styles.moodLegend}>
-            <View style={styles.legendItem}>
-              <View style={[styles.legendDot, { backgroundColor: '#2a9d8f' }]} />
-              <ThemedText style={styles.legendText}>Happy</ThemedText>
-            </View>
-            <View style={styles.legendItem}>
-              <View style={[styles.legendDot, { backgroundColor: '#ff0000' }]} />
-              <ThemedText style={styles.legendText}>Sad</ThemedText>
-            </View>
-          </View>
-          <MoodLineChart 
-          data={chartData}
-           />
-
-          {/* <UpcommingSession /> */}
-
+          <MoodLineChart />
           <View style={{ marginVertical: 24 }}>
             <UpcommingSession />
           </View>
@@ -159,7 +143,6 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 12,
     fontWeight: '600',
-    marginBottom: 16,
   },
   moodLegend: {
     flexDirection: 'row',

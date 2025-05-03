@@ -3,6 +3,8 @@ import { Dimensions, StyleSheet, View, Text, TouchableOpacity, ActivityIndicator
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useState } from "react";
 import { useGetDashboardQuery, DashboardData } from "@/features/journal-api";
+import { ThemedView } from "../ThemedView";
+import { Colors } from "@/constants/Colors";
 
 interface MoodEntry {
   rating: number;
@@ -29,6 +31,7 @@ const moodLabels = {
   1: "Fear",
   0: "Disgust"
 } as const;
+
 const MoodLineChart = () => {
   const cardBg = useThemeColor({ light: '#FFFFFF', dark: '#232627' }, 'background');
   const labelColor = useThemeColor({ dark: '#FFFFFF', light: '#232627' }, 'text');
@@ -38,7 +41,7 @@ const MoodLineChart = () => {
     time: string;
     mood: string;
   }>(null);
-  const [showLast30Days, setShowLast30Days] = useState(false);
+  const [showLast30Days, setShowLast30Days] = useState(true);
 
   const { data: dashboardData, isLoading, error } = useGetDashboardQuery();
   const moodEntries = dashboardData?.moodData?.moods || [];
@@ -69,11 +72,18 @@ const MoodLineChart = () => {
     return new Date(mood.createdAt) >= daysAgo;
   });
 
-  const formatDate = (date: string) => new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  const formatTime = (date: string) => new Date(date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  const formatDate = (date: string) => {
+    const d = new Date(date);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  const formatTime = (date: string) => {
+    const d = new Date(date);
+    return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  };
 
   const chartHeight = 208;
-  const yAxisHeight = chartHeight - 40; // vertical padding of LineChart
+  const yAxisHeight = chartHeight - 40;
 
   const chartData = {
     labels: filteredData.map((mood) => formatDate(mood.createdAt)),
@@ -82,42 +92,65 @@ const MoodLineChart = () => {
     }],
   };
 
-  // Ensure we have valid data points
   if (filteredData.length === 0) {
     return (
-      <View style={styles.errorContainer}>
-        <Text style={[styles.errorText, { color: labelColor }]}>
-          No mood data available for the selected period
-        </Text>
+      <View>
+        <ThemedView style={styles.switchContainer}>
+          <TouchableOpacity
+            style={[styles.switchButton, !showLast30Days && styles.activeButton]}
+            onPress={() => setShowLast30Days(false)}
+          >
+            <Text style={[styles.switchText, { color: labelColor }]}>Last 7 Days</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.switchButton, showLast30Days && styles.activeButton]}
+            onPress={() => setShowLast30Days(true)}
+          >
+            <Text style={[styles.switchText, { color: labelColor }]}>Last 30 Days</Text>
+          </TouchableOpacity>
+        </ThemedView>
+        <View style={styles.errorContainer}>
+          <Text style={[styles.errorText, { color: labelColor }]}>
+            No mood data available for the {showLast30Days ? 'last 30 days' : 'last 7 days'}
+          </Text>
+        </View>
       </View>
     );
   }
 
   return (
-    <View style={{ position: 'relative', paddingLeft: 70 }}>
-      {/* Custom Y-axis labels */}
-      <View style={[styles.yAxisCustomLabels, { height: chartHeight }]}>
-        {Object.entries(moodLabels).reverse().map(([value, label], index) => (
-          <Text
-            key={value}
-            style={{
-              position: 'absolute',
-              top: (yAxisHeight / 5) * index,
-              color: labelColor,
-              fontSize: 10,
-              right: 8,
-              textAlign: 'right',
-            }}
-          >
-            {label}
-          </Text>
+    <View>
+      <ThemedView
+         style={styles.switchContainer}>
+        <TouchableOpacity
+          style={[styles.switchButton, !showLast30Days && styles.activeButton]}
+          onPress={() => setShowLast30Days(false)}
+        >
+          <Text style={[styles.switchText, { color: labelColor }]}>Last 7 Days</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.switchButton, showLast30Days && styles.activeButton]}
+          onPress={() => setShowLast30Days(true)}
+        >
+          <Text style={[styles.switchText, { color: labelColor }]}>Last 30 Days</Text>
+        </TouchableOpacity>
+      </ThemedView>
+      {/* Mood Labels Legend */}
+      <View style={styles.legendContainer}>
+        {Object.entries(moodLabels).map(([value, label]) => (
+          <View key={value} style={styles.legendItem}>
+            <Text style={[styles.legendText, { color: labelColor }]}>{label} ({value})</Text>
+          </View>
         ))}
       </View>
+
+      {/* Custom Y-axis labels */}
+     
 
       {/* Line chart */}
       <LineChart
         data={chartData}
-        width={Dimensions.get('window').width - 100}
+        width={Dimensions.get('window').width -50}
         height={chartHeight}
         chartConfig={{
           backgroundColor: cardBg,
@@ -129,8 +162,8 @@ const MoodLineChart = () => {
           decimalPlaces: 0,
         }}
         bezier
-        style={{ borderRadius: 16 }}
-        withInnerLines={false}
+        style={{ borderRadius: 16, }}
+        // withInnerLines={false}
         onDataPointClick={({ value, index }) => {
           const mood = filteredData[index];
           setSelectedPoint({
@@ -144,31 +177,18 @@ const MoodLineChart = () => {
 
       {/* Tooltip */}
       {selectedPoint && (
-        <View style={styles.tooltip}>
+        <ThemedView style={styles.tooltip}>
           <Text style={[styles.tooltipText, { color: labelColor }]}>
-            {selectedPoint.time} - {selectedPoint.mood}
+            {selectedPoint.time} - {selectedPoint.mood} ({selectedPoint.rating})
           </Text>
           <Text style={[styles.tooltipText, { color: labelColor }]}>
             Note: {selectedPoint.note}
           </Text>
-        </View>
+        </ThemedView>
       )}
 
       {/* Toggle Last 7 / 30 Days */}
-      <View style={styles.switchContainer}>
-        <TouchableOpacity
-          style={[styles.switchButton, !showLast30Days && styles.activeButton]}
-          onPress={() => setShowLast30Days(false)}
-        >
-          <Text style={[styles.switchText, { color: labelColor }]}>Last 7 Days</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.switchButton, showLast30Days && styles.activeButton]}
-          onPress={() => setShowLast30Days(true)}
-        >
-          <Text style={[styles.switchText, { color: labelColor }]}>Last 30 Days</Text>
-        </TouchableOpacity>
-      </View>
+    
     </View>
   );
 };
@@ -189,17 +209,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
-  yAxisCustomLabels: {
-    position: 'absolute',
-    left: 0,
-    top: 16,
-    width: 60,
-    justifyContent: 'space-between',
-  },
   tooltip: {
     padding: 8,
     borderRadius: 8,
     marginTop: 8,
+    backgroundColor: '#0000001A',
+    borderWidth: 1,
+    borderLeftColor: Colors.harmony.primary,
+    borderLeftWidth: 4,
+    borderColor:Colors.harmony.light
   },
   tooltipText: {
     fontSize: 12,
@@ -207,20 +225,51 @@ const styles = StyleSheet.create({
   },
   switchContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 16,
+    // justifyContent: 'space-between',
+    marginVertical: 16,
+    borderRadius: 16,
+    // borderWidth: 1,
+    height: 32,
+    width: '100%',
+    backgroundColor: '#0000001A'
   },
+  
   switchButton: {
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginHorizontal: 4,
+    width: '49%',
+
   },
   activeButton: {
     backgroundColor: 'rgba(0, 230, 118, 0.2)',
   },
   switchText: {
     fontSize: 14,
+  },
+  legendContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 16,
+    paddingHorizontal: 16,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 16,
+    marginBottom: 8,
+  },
+  legendDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: 8,
+  },
+  legendText: {
+    fontSize: 12,
   },
 });
 
