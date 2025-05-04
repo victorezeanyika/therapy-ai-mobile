@@ -25,7 +25,12 @@ const steps = [
     key: 'therapyExperience',
     title: 'Have you tried therapy before?',
     desc:"This helps us personalize your experience",
-    options: ['Yes, I’m currently in therapy', 'Yes, in the past', 'I have always wanted to try it', 'It’s been difficult to find one', 'Prefer not to disclose', 'Other'],
+    options: ['Yes, i\'m currently in therapy',
+       'Yes, in the past',
+        'I have always wanted to try it', 
+        'It\'s been difficult to find one',
+         'Prefer not to disclose',
+          'Other'],
   },
   {
     key: 'preferredApproach',
@@ -65,7 +70,6 @@ export default function AssessmentScreen({ navigation }: any) {
       communicationStyle: ''
     }
   });
-
   const currentStep = steps[step];
   const selected = watch(currentStep.key as keyof PreferencesForm);
 
@@ -74,12 +78,12 @@ export default function AssessmentScreen({ navigation }: any) {
       setStep((prev) => prev + 1);
     } else {
       const preferences = getValues();
-      router.push('/(auth)'); // Or show confirmation screen
       try {
-        const res = await submitUserPreference(preferences).unwrap()
-        success("Your preferences have been saved successfully")
+        const res = await submitUserPreference(preferences).unwrap();
+        success("Your preferences have been saved successfully");
+        router.replace('/(tabs)'); // Only redirect after successful save
       } catch (error) {
-        toastError("Something went wrong.")
+        toastError("Something went wrong.");
       }
     }
   };

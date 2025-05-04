@@ -55,15 +55,15 @@ export default function Auth() {
           lightColor="#F7F4F2"
           darkColor=""
         >
+          <Image 
+            source={require('@/assets/images/authheader.png')}
+            style={styles.headerImage}
+          />
           <ScrollView 
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
             bounces={false}
           >
-            <Image 
-              source={require('@/assets/images/authheader.png')}
-              style={styles.headerImage}
-            />
             <View style={styles.content}>
               <ThemedText type="title">
                 Get Started Now

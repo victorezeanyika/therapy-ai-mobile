@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, Keyboard, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Keyboard, TouchableOpacity, Alert } from 'react-native';
 import { useState, useRef } from 'react';
 import { Colors } from '@/constants/Colors';
 import { useLocalSearchParams, router } from 'expo-router';
@@ -46,17 +46,24 @@ export default function VerifyOtp() {
         await AsyncStorage.setItem('accessToken', result.accessToken);
         
         // Fetch user profile
-        const { data: userProfile } = await refetchProfile();        
-        if (userProfile) {
-          dispatch(setCredentials({ user: userProfile, accessToken: result.accessToken }));
-          // Check if user has completed preferences
-          if (userProfile && !userProfile.preferences?.primaryConcern) {
-            // Redirect to assessment if no primary concern is set
-            router.replace('/(auth)/assessment');
-          } else {
-            // Redirect to tabs if preferences are complete
-            router.replace('/(tabs)');
-          }
+        const { data: userProfile, isLoading: isLoadingProfile } = await refetchProfile();        
+        if (isLoadingProfile) {
+          return; // Wait for profile to load
+        }
+        console.log('userProfile', userProfile);
+        
+        if (!userProfile) {
+          alert('Failed to fetch user profile');
+          return;
+        }
+
+        dispatch(setCredentials({ user: userProfile, accessToken: result.accessToken }));
+        console.log('userProfile.preferences?.primaryConcern', userProfile.preferences?.primaryConcern);
+        if (userProfile.preferences?.primaryConcern === null) {
+          router.replace('/(auth)/assessment');
+        } else if (userProfile.preferences?.primaryConcern != null) {
+          router.replace('/(tabs)');
+          alert(userProfile.preferences?.primaryConcern);
         }
       } catch (error: any) {
         alert(error?.data?.message || error?.data?.error || error?.message || 'An error occurred');
@@ -144,8 +151,8 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   otpInput: {
-    width: 59,
-    height: 63,
+    width: 49,
+    height: 53,
     borderRadius: 25,
     borderWidth: 1.5,
     borderColor: Colors.harmony.primary,

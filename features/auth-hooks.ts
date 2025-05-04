@@ -9,7 +9,7 @@ export const useAuthCheck = (redirectPath: string = '/(tabs)') => {
   useEffect(() => {
     const checkAuth = async () => {
       const accessToken = await AsyncStorage.getItem('accessToken');
-      if (accessToken && user) {
+      if (accessToken && user && user.preferences?.primaryConcern != null) {
         router.replace(redirectPath);
       }
     };
@@ -21,7 +21,7 @@ export const useAuthRedirect = async (redirectPath: string = '/(tabs)') => {
   const accessToken = await AsyncStorage.getItem('accessToken');
   const { user } = useAppSelector(state => state.auth);
   
-  if (accessToken && user) {
+  if (accessToken && user && user.preferences?.primaryConcern != null) {
     router.replace(redirectPath);
     return true;
   }

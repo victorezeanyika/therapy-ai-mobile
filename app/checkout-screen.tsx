@@ -3,9 +3,15 @@ import { StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { useLocalSearchParams, router } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
+import { useGetProfileQuery } from '@/features/auth-api';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '@/features/auth-slice';
 
 const CheckoutScreen = () => {
   const { url:sessionUrl } = useLocalSearchParams();
+  const { refetch: refetchProfile } = useGetProfileQuery();
+  const dispatch = useDispatch();
+
   if (!sessionUrl) {
     return (
       <ThemedView style={styles.container}>
@@ -13,6 +19,19 @@ const CheckoutScreen = () => {
       </ThemedView>
     );
   }
+
+  const handleSuccess = async () => {
+    try {
+      const { data: userProfile } = await refetchProfile();
+      if (userProfile) {
+        dispatch(setCredentials({ user: userProfile }));
+      }
+      router.replace('/subscriptions');
+    } catch (error) {
+      console.error('Failed to update user profile:', error);
+      router.replace('/subscriptions');
+    }
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -24,7 +43,7 @@ const CheckoutScreen = () => {
         )}
         onNavigationStateChange={(event) => {
           if (event.url.includes('success')) {
-            router.replace('/subscriptions'); // Replace with your actual post-payment screen
+            handleSuccess();
           }
         }}
       />

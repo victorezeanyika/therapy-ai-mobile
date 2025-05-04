@@ -104,7 +104,7 @@ export default function WelcomeScreen() {
         >
           <CustomButton 
             title='Get Started'
-            onPress={() => router.replace('/(auth)')}
+            onPress={() => router.replace('/(onboarding)')}
           />
         </Animated.View>
       </View>

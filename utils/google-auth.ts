@@ -26,7 +26,7 @@ console.log(
 
 WebBrowser.maybeCompleteAuthSession();
 
-const GOOGLE_CLIENT_ID = '526420142631-fhec6u2ke48sk10soblcm3hpnamd2mqh.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = '526420142631-0alhcv8gasuspq4nc1bv1ejcgprm7p83.apps.googleusercontent.com';
 
 export const useGoogleSignIn = () => {
   const { success, error: toastError } = useToast();

@@ -61,7 +61,7 @@ export default function ChatScreen() {
 
   useEffect(() => {
     const initializeNewSession = async () => {
-      if (paramSessionId) return; // Skip if we have an existing session
+    if (paramSessionId) return; // Skip if we have an existing session
 
       try {
         const response = await createSession().unwrap();

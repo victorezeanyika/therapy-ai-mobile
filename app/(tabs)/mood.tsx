@@ -14,6 +14,7 @@ import { RootStackParamList } from '@/types/navigation';
 import MoodList from '@/components/moods/mood-list';
 import MoodForm from '@/components/moods/mood-form';
 import { Colors } from '@/constants/Colors';
+import { useThemeColor } from '@/hooks/useThemeColor';
 
 export default function MoodJournalScreen({ navigation }: { navigation: NativeStackNavigationProp<RootStackParamList> }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -25,7 +26,8 @@ export default function MoodJournalScreen({ navigation }: { navigation: NativeSt
   const { success, error: toastError } = useToast();
   const analysis = data?.analysis || [];
   const moods = data?.moods || [];
-
+  const iconColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'icon');
+  
   const handleAddMood = async (mood: string, rating: number, note: string, tags: string[], triggers: string[]) => {
     try {
       const [mainMoodLabel, subMoodsStr] = mood.split('|');
@@ -132,19 +134,19 @@ export default function MoodJournalScreen({ navigation }: { navigation: NativeSt
         onRequestClose={() => setIsModalVisible(false)}
       >
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
+          <ThemedView style={styles.modalContent}>
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setIsModalVisible(false)}
             >
-              <Ionicons name="close" size={24} color="#000" />
+              <Ionicons name="close" size={24} color={iconColor} />
             </TouchableOpacity>
             <MoodForm
               onSubmit={handleAddMood}
               initialData={editingEntry || undefined}
               selectedMood={selectedMood || undefined}
             />
-          </View>
+          </ThemedView>
         </View>
       </Modal>
     </ThemedView>
@@ -188,7 +190,6 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: '90%',
-    backgroundColor: '#fff',
     borderRadius: 30,
     padding: 16,
     maxHeight: '80%',
