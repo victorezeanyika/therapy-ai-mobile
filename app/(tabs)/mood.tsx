@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView, SafeAreaView, Modal, TouchableOpacity, Alert } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, View, ScrollView, Modal, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import MoodSelector from '@/components/moods/mood-selector';
-import MoodSummary from '@/components/moods/mood-summary';
 import MoodLineChart from '@/components/moods/mood-line-chart';
-import MoodTabSwitcher from '@/components/moods/mood-switcher';
 import TopHeader from '@/components/TopHeader';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import MoodWheel from '@/components/moods/mood-wheel';
-import { chartData, moodOptions, summaryText } from '@/constants';
-import { useThemeColor } from '@/hooks/useThemeColor';
+import MoodWheel, { MOODS } from '@/components/moods/mood-wheel';
 import { useAddMoodEntryMutation, useGetMoodEntriesQuery, useUpdateMoodEntryMutation } from '@/features/mood-api';
 import { useToast } from '@/context/toast-context';
 import { MoodEntry } from '@/features/mood-api';
@@ -22,7 +16,6 @@ import MoodForm from '@/components/moods/mood-form';
 import { Colors } from '@/constants/Colors';
 
 export default function MoodJournalScreen({ navigation }: { navigation: NativeStackNavigationProp<RootStackParamList> }) {
-  const [tab, setTab] = useState('7');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [editingEntry, setEditingEntry] = useState<MoodEntry | null>(null);
@@ -31,18 +24,41 @@ export default function MoodJournalScreen({ navigation }: { navigation: NativeSt
   const { data, refetch, isLoading } = useGetMoodEntriesQuery();
   const { success, error: toastError } = useToast();
   const analysis = data?.analysis || [];
-  // console.log(analysis, 'any analysis');
-  const moods = data?.moods as any || [];
+  const moods = data?.moods || [];
 
   const handleAddMood = async (mood: string, rating: number, note: string, tags: string[], triggers: string[]) => {
     try {
+      const [mainMoodLabel, subMoodsStr] = mood.split('|');
+      const selectedSubMoods = subMoodsStr ? subMoodsStr.split(',') : [];
+
+      const moodObj = MOODS.find(m => m.label === mainMoodLabel);
+  
+      if (!moodObj) {
+        toastError('Invalid mood selection');
+        return;
+      }
+  
+      const moodRatings = {
+        'very-sad': 1,
+        'sad': 2,
+        'neutral': 3,
+        'happy': 4,
+        'amazing': 5
+      };
+
+      const moodRating = moodRatings[mainMoodLabel as keyof typeof moodRatings] || 3;
+  
+      const noteContent = selectedSubMoods.length > 0
+        ? `Feelings: ${selectedSubMoods.join(', ')}${note ? '\n\n' + note : ''}`
+        : note || 'No specific feelings noted';
+  
       if (editingEntry) {
         await updateMood({
           entryId: editingEntry.entryId!,
           entry: {
-            mood,
-            rating,
-            note,
+            mood: mainMoodLabel,
+            rating: moodRating,
+            note: noteContent,
             tags,
             triggers
           }
@@ -51,16 +67,16 @@ export default function MoodJournalScreen({ navigation }: { navigation: NativeSt
         success('Mood entry updated successfully');
       } else {
         await addMood({
-          mood,
-          rating,
-          note,
+          mood: mainMoodLabel,
+          rating: moodRating,
+          note: noteContent,
           tags,
           triggers
         }).unwrap();
         await refetch();
         success('Mood entry added successfully');
       }
-
+  
       setIsModalVisible(false);
       setEditingEntry(null);
       setSelectedMood(null);
@@ -86,38 +102,26 @@ export default function MoodJournalScreen({ navigation }: { navigation: NativeSt
   };
 
   const handleMoodSelect = (mood: string) => {
-    console.log('Selected mood:', mood); // Debug log
     setSelectedMood(mood);
   };
-
-  const moodOptions = [
-    { label: "Sad", color: "#A3C4F3", submoods: ["Bored", "Lonely", "Despair", "Guilty"] },
-    { label: "Fear", color: "#B4AEE8", submoods: ["Insecure", "Rejected", "Anxious", "Scared"] },
-    { label: "Anger", color: "#F7A072", submoods: ["Mad", "Hurt", "Threatened", "Distant"] },
-    { label: "Surprise", color: "#FFE156", submoods: ["Confused", "Startled", "Amazed", "Excited"] },
-    { label: "Happy", color: "#A8E6CF", submoods: ["Joyful", "Proud", "Optimistic", "Peaceful"] },
-    { label: "Disgust", color: "#B8E994", submoods: ["Disappointed", "Awful", "Disapproval", "Avoidance"] }
-  ];
 
   return (
     <ThemedView style={styles.container}>
       <TopHeader title="Mood Journal" />
       <ScrollView 
-      style={styles.scrollView} 
-      contentContainerStyle={styles.scrollContent}
-      showsVerticalScrollIndicator={false}
+        style={styles.scrollView} 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
       >
-      <MoodLineChart
-       analysis={analysis}
-      />
+        <MoodLineChart analysis={analysis} />
         <ThemedText style={styles.sectionTitle}>How are you feeling today?</ThemedText>
-        <MoodSelector moods={moodOptions} onSelect={handleMoodSelect} />
-        <MoodWheel onSelect={handleMoodSelect} />  
+        <MoodWheel onSelect={handleMoodSelect} />
 
         <TouchableOpacity style={styles.addButton} onPress={handleAddNew}>
           <Ionicons name="add-circle" size={24} color={Colors.harmony.primary} />
           <ThemedText style={styles.addButtonText}>Add New Mood Entry</ThemedText>
         </TouchableOpacity>
+
         <MoodList moods={moods} onEdit={handleEdit} />
       </ScrollView>
 
@@ -193,7 +197,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 16,
     right: 16,
-    marginBottom:10,
+    marginBottom: 10,
     zIndex: 1,
   },
 });
