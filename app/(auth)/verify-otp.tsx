@@ -63,7 +63,7 @@ export default function VerifyOtp() {
           router.replace('/(auth)/assessment');
         } else if (userProfile.preferences?.primaryConcern != null) {
           router.replace('/(tabs)');
-          alert(userProfile.preferences?.primaryConcern);
+          // alert(userProfile.preferences?.primaryConcern);
         }
       } catch (error: any) {
         alert(error?.data?.message || error?.data?.error || error?.message || 'An error occurred');

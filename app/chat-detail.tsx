@@ -40,6 +40,7 @@ export default function ChatScreen() {
   const [input, setInput] = useState('');
   const [timeLeft, setTimeLeft] = useState<number>(60 * 60); // 60 minutes in seconds
   const [isSessionActive, setIsSessionActive] = useState(true);
+  const [isSessionExpired, setIsSessionExpired] = useState(false);
 
   // Fetch existing session data if sessionId is provided
   const { data: existingSession, isLoading: isLoadingSession } = useGetSessionByIdQuery(
@@ -113,6 +114,20 @@ export default function ChatScreen() {
 
     return () => clearInterval(timer);
   }, [isSessionActive]);
+
+  // Add session expiration check
+  useEffect(() => {
+    if (existingSession?.sessionStartTime) {
+      const startTime = new Date(existingSession.sessionStartTime).getTime();
+      const currentTime = new Date().getTime();
+      const oneHourInMs = 60 * 60 * 1000;
+      
+      if (currentTime - startTime > oneHourInMs) {
+        setIsSessionExpired(true);
+        setIsSessionActive(false);
+      }
+    }
+  }, [existingSession]);
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -210,16 +225,22 @@ export default function ChatScreen() {
       <TopHeader title="Serentis" />
       <View style={styles.timerContainer}>
         <View style={styles.timerRow}>
-          <Text style={styles.timerText}>
-            Session ends in: {formatTime(timeLeft)}
-          </Text>
-          <TouchableOpacity 
-            style={[styles.endSessionButton, (timeLeft > 30 * 60) && styles.endSessionButtonDisabled]}
-            onPress={handleEndSession}
-            disabled={!isSessionActive || timeLeft > 30 * 60}
-          >
-            <MaterialCommunityIcons name="close-circle" size={24} color="white" />
-          </TouchableOpacity>
+          {isSessionExpired ? (
+            <Text style={styles.expiredText}>This session has ended</Text>
+          ) : (
+            <>
+              <Text style={styles.timerText}>
+                Session ends in: {formatTime(timeLeft)}
+              </Text>
+              <TouchableOpacity 
+                style={[styles.endSessionButton, (timeLeft > 30 * 60) && styles.endSessionButtonDisabled]}
+                onPress={handleEndSession}
+                disabled={!isSessionActive || timeLeft > 30 * 60}
+              >
+                <MaterialCommunityIcons name="close-circle" size={24} color="white" />
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </View>
     
@@ -234,34 +255,36 @@ export default function ChatScreen() {
           contentContainerStyle={{ padding: 20 }}
         />
     
-        <ActivityOptions activities={[]} />
+        {!isSessionExpired && <ActivityOptions activities={[]} />}
     
-        <View style={styles.inputContainer}>
-          <TouchableOpacity style={styles.attachButton}>
-            {/* <MaterialCommunityIcons name="paperclip" size={24} color="#9E9E9E" /> */}
-          </TouchableOpacity>
-    
-          <TextInput
-            style={styles.input}
-            placeholder="Write a message..."
-            value={input}
-            onChangeText={setInput}
-            placeholderTextColor="#bbb"
-            editable={isSessionActive}
-          />
-    
-          <TouchableOpacity 
-            style={[styles.sendButton, (!isSessionActive || isSendingMessage || !sessionId || input.trim() === '') && styles.sendButtonDisabled]} 
-            onPress={() => handleSendMessage(input)}
-            disabled={!isSessionActive || isSendingMessage || !sessionId || input.trim() === ''}
-          >
-            {isSendingMessage ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <MaterialCommunityIcons name="send" size={20} color="white" />
-            )}
-          </TouchableOpacity>
-        </View>
+        {!isSessionExpired && (
+          <View style={styles.inputContainer}>
+            <TouchableOpacity style={styles.attachButton}>
+              {/* <MaterialCommunityIcons name="paperclip" size={24} color="#9E9E9E" /> */}
+            </TouchableOpacity>
+      
+            <TextInput
+              style={styles.input}
+              placeholder="Write a message..."
+              value={input}
+              onChangeText={setInput}
+              placeholderTextColor="#bbb"
+              editable={isSessionActive}
+            />
+      
+            <TouchableOpacity 
+              style={[styles.sendButton, (!isSessionActive || isSendingMessage || !sessionId || input.trim() === '') && styles.sendButtonDisabled]} 
+              onPress={() => handleSendMessage(input)}
+              disabled={!isSessionActive || isSendingMessage || !sessionId || input.trim() === ''}
+            >
+              {isSendingMessage ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <MaterialCommunityIcons name="send" size={20} color="white" />
+              )}
+            </TouchableOpacity>
+          </View>
+        )}
       </KeyboardAvoidingView>
     </ThemedView>
   );
@@ -336,5 +359,10 @@ const styles = StyleSheet.create({
   },
   sendButtonDisabled: {
     backgroundColor: '#666',
+  },
+  expiredText: {
+    color: '#FF4444',
+    fontSize: 16,
+    fontFamily: 'Gotham-Medium',
   },
 });

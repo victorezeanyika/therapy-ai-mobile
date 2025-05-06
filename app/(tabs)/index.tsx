@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 import * as Progress from 'react-native-progress';
@@ -13,11 +13,15 @@ import { useGetDashboardQuery } from '@/features/journal-api';
 import UpcommingSession from '@/components/upcoming-session';
 import TherapySessions from '@/components/therapy-sessions';
 import { useGetSubscriptionStatusQuery } from '@/features/subscriptions-api';
+import { Colors } from '@/constants/Colors';
 
 export default function HomeScreen() {
   const { data: subscriptionStatus } = useGetSubscriptionStatusQuery();
   const { user } = useAppSelector(state => state.auth);
-  const { data: dashboardData } = useGetDashboardQuery();
+  const [refreshing, setRefreshing] = useState(false);
+  
+  const { data: dashboardData, refetch } = useGetDashboardQuery();
+
   const weekDays = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
   const goals = [
     {
@@ -42,13 +46,31 @@ export default function HomeScreen() {
   const moodsData = dashboardData?.moodData?.moods as any;
   const analysis = dashboardData?.moodData?.analysis as any;
   console.log(analysis, 'moodsData')
-  
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await refetch();
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch]);
 
   return (
       <ThemedView style={styles.container}>
       <ScrollView
        style={styles.scrollView}
        showsVerticalScrollIndicator={false}
+       refreshControl={
+         <RefreshControl
+           refreshing={refreshing}
+           onRefresh={onRefresh}
+           colors={[Colors.harmony.primary]}
+           tintColor={Colors.harmony.primary}
+         />
+       }
       >
         {/* Header */}
        <Header  name={user?.name}/>

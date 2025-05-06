@@ -49,7 +49,7 @@ export default function SignupForm() {
       router.replace({ pathname: '/(auth)' });
       // router.replace({ pathname: '/(auth)/verify-otp', params: { email: data.email } });
     } catch (error: any) {
-      toastError(error?.response?.data?.message || error.message || "Something went wrong");
+      toastError(error?.response?.data?.message || error.message || "Something went wrong, Email Probably Already Exists");
       console.log(error, 'error')
     }
   };

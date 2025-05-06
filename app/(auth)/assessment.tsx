@@ -57,6 +57,7 @@ export type PreferencesForm = z.infer<typeof PreferencesSchema>;
 export default function AssessmentScreen({ navigation }: any) {
   const [step, setStep] = useState(0);
   const btnBg = useThemeColor({light:'#FFFFFF', dark:'#232627'}, 'button')
+  const textColor = useThemeColor({light:'#000', dark:'#FFF'}, 'text')
   const [submitUserPreference, {isLoading:isSubmitting}] = useSubmitUserPreferencesMutation();
   const { success, error:toastError, info } = useToast();
   const { user } = useAppSelector(state => state.auth);
@@ -155,7 +156,7 @@ export default function AssessmentScreen({ navigation }: any) {
       {/* Option text */}
       <ThemedText 
         style={{
-        color: selected === item ?  'white' :'black',
+        color: selected === item ?  '#fff' : textColor,
         fontSize: 16,
         fontFamily: 'Gotham-Medium',
         flexShrink: 1,
