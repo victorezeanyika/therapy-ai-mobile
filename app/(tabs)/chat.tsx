@@ -51,7 +51,7 @@ export default function WelcomeScreen() {
     <KeyboardAvoidingView 
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={80}
+      keyboardVerticalOffset={100}
     >
       {/* Sidebar */}
       {/* <Animated.View style={[styles.sidebar, { left: sidebarAnim }]}>

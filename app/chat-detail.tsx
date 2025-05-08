@@ -6,7 +6,7 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import TopHeader from '@/components/TopHeader';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useCreateSessionMutation, useSendMessageMutation, useGetSessionByIdQuery, useEndSessionMutation } from '@/features/chat-api';
+import { useCreateSessionMutation, useSendMessageMutation, useGetSessionByIdQuery, useEndSessionMutation, useGetAllSessionsQuery } from '@/features/chat-api';
 import { useToast } from '@/context/toast-context';
 
 interface ChatMessage {
@@ -41,6 +41,11 @@ export default function ChatScreen() {
   const [timeLeft, setTimeLeft] = useState<number>(60 * 60); // 60 minutes in seconds
   const [isSessionActive, setIsSessionActive] = useState(true);
   const [isSessionExpired, setIsSessionExpired] = useState(false);
+  const { data } = useGetAllSessionsQuery();
+  const stats = data?.stats;
+  console.log(stats, 'stats')
+
+
 
   // Fetch existing session data if sessionId is provided
   const { data: existingSession, isLoading: isLoadingSession } = useGetSessionByIdQuery(
