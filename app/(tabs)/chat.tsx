@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   View, Text, Image, StyleSheet, TouchableOpacity, FlatList,
-  TextInput, KeyboardAvoidingView, Platform, Animated, Dimensions
+  TextInput, KeyboardAvoidingView, Platform, Animated, Dimensions, ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { fetchMotivationalQuote, featuresData } from '../../features/mockApi';
@@ -11,6 +11,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
+import { useThemeColor } from '@/hooks/useThemeColor';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -50,79 +51,85 @@ export default function WelcomeScreen() {
   return (
     <KeyboardAvoidingView 
       style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={100}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
     >
-      {/* Sidebar */}
-      {/* <Animated.View style={[styles.sidebar, { left: sidebarAnim }]}>
-      <TouchableOpacity onPress={toggleMenu} style={styles.closeIcon}>
-        <MaterialIcons name="close" size={28} color={Colors.harmony.primary} />
-      </TouchableOpacity>
-      <ThemedText style={styles.sidebarTitle}>My Conversations</ThemedText>
-      {dummyConversations.map(conv => (
-        <TouchableOpacity key={conv.id} style={styles.convoItem}>
-          <ThemedText style={styles.convoText}>{conv.name}</ThemedText>
-        </TouchableOpacity>
-      ))}
-    </Animated.View> */}
-      
-
-      <ThemedView style={styles.container}>
-        {/* Menu Icon */}
-        {/* <TouchableOpacity style={styles.menuIcon} onPress={toggleMenu}>
-          <MaterialIcons name="menu" size={28} color={Colors.harmony.primary} />
-        </TouchableOpacity> */}
-        <View style={styles.linksContainer}>
-        <TouchableOpacity 
-          style={styles.linkItem}
-          onPress={() => router.push('/conversations')}
-        >
-          <ThemedText style={styles.linkText}>My Conversations</ThemedText>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.linkItem}
-          onPress={() => router.push('/activities')}
-        >
-          <ThemedText style={styles.linkText}>My Activities</ThemedText>
-        </TouchableOpacity>
-      </View>
-
-        <Image
-          source={require('../../assets/images/frame1.png')}
-          style={styles.image}
-          resizeMode="contain"
-        />
-        <View>
-          <ThemedText style={styles.title}>Welcome to Serentis</ThemedText>
-          <ThemedText style={styles.subtitle}>
-            Serentis blends cutting-edge technology with empathy to support your mental wellness journey
-          </ThemedText>
-        </View>
-
-        <ThemedView 
-          darkColor="#232627"
-          lightColor="#8383830D"
-          style={styles.inputContainer}
-        >
-          <TextInput
-            placeholder="I need some motivational quote"
-            value={inputText}
-            onChangeText={setInputText}
-            style={styles.input}
-          />
-          <TouchableOpacity style={styles.quoteButton} onPress={handleSend}>
-            <MaterialIcons name="send" size={20} color="white" />
+      <ScrollView 
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+        bounces={false}
+      >
+        <ThemedView style={styles.container}>
+          {/* Sidebar */}
+          {/* <Animated.View style={[styles.sidebar, { left: sidebarAnim }]}>
+          <TouchableOpacity onPress={toggleMenu} style={styles.closeIcon}>
+            <MaterialIcons name="close" size={28} color={Colors.harmony.primary} />
           </TouchableOpacity>
-        </ThemedView>
+          <ThemedText style={styles.sidebarTitle}>My Conversations</ThemedText>
+          {dummyConversations.map(conv => (
+            <TouchableOpacity key={conv.id} style={styles.convoItem}>
+              <ThemedText style={styles.convoText}>{conv.name}</ThemedText>
+            </TouchableOpacity>
+          ))}
+        </Animated.View> */}
+          
+          {/* Menu Icon */}
+          {/* <TouchableOpacity style={styles.menuIcon} onPress={toggleMenu}>
+            <MaterialIcons name="menu" size={28} color={Colors.harmony.primary} />
+          </TouchableOpacity> */}
+          <View style={styles.linksContainer}>
+            <TouchableOpacity 
+              style={styles.linkItem}
+              onPress={() => router.push('/conversations')}
+            >
+              <ThemedText style={styles.linkText}>My Conversations</ThemedText>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.linkItem}
+              onPress={() => router.push('/activities')}
+            >
+              <ThemedText style={styles.linkText}>My Activities</ThemedText>
+            </TouchableOpacity>
+          </View>
 
-        <FlatList
-          data={featuresData}
-          renderItem={({ item }) => <FeatureCard feature={item} />}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.featuresList}
-        />
-      </ThemedView>
+          <Image
+            source={require('../../assets/images/frame1.png')}
+            style={styles.image}
+            resizeMode="contain"
+          />
+          <View>
+            <ThemedText style={styles.title}>Welcome to Serentis</ThemedText>
+            <ThemedText style={styles.subtitle}>
+              Serentis blends cutting-edge technology with empathy to support your mental wellness journey
+            </ThemedText>
+          </View>
+
+          <ThemedView 
+            darkColor="#232627"
+            lightColor="#8383830D"
+            style={styles.inputContainer}
+          >
+            <TextInput
+              placeholder="I need some motivational quote"
+              value={inputText}
+              onChangeText={setInputText}
+              style={styles.input}
+              placeholderTextColor={useThemeColor({ light: Colors.harmony.text, dark: '#FFFFFF' }, 'text')}
+            />
+            <TouchableOpacity style={styles.quoteButton} onPress={handleSend}>
+              <MaterialIcons name="send" size={20} color="white" />
+            </TouchableOpacity>
+          </ThemedView>
+
+          <View style={{ width: '100%', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+            {featuresData.map((item) => (
+              <FeatureCard key={item.id} feature={item} />
+            ))}
+          </View>
+        </ThemedView>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }

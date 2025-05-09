@@ -21,6 +21,7 @@ const JournalTextArea = ({ value, onChangeText }: JournalTextAreaProps) => {
         value={value}
         onChangeText={onChangeText}
         style={[styles.textArea, { color: inputText }]}
+        placeholderTextColor={inputText}
         multiline
       />
     </ThemedView>

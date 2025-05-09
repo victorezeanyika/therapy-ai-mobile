@@ -154,6 +154,7 @@ const JournalScreen = () => {
               value={title}
               onChangeText={setTitle}
               style={styles.input}
+              placeholderTextColor={inputText}
             />
 
             <View style={styles.tagsContainer}>
@@ -163,6 +164,7 @@ const JournalScreen = () => {
                 onChangeText={setTagInput}
                 onSubmitEditing={handleAddTag}
                 style={styles.input}
+                placeholderTextColor={inputText}
               />
               {tags.length > 0 && (
                 <View style={styles.tagsDisplay}>

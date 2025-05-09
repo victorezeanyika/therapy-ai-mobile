@@ -34,6 +34,7 @@ const SearchBar = ({ value, onChangeText }: SearchBarProps) => {
           value={value}
           onChangeText={onChangeText}
           style={[styles.input, {color:inputText, flex: 1}]}
+          placeholderTextColor={bgColor}
         />
       </ThemedView>
     </TouchableOpacity>
