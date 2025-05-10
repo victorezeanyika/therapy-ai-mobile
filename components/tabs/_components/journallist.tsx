@@ -35,15 +35,7 @@ export default function JournalList({
     (currentPage + 1) * PAGE_SIZE
   );
 
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
+
 
   return (
     <View style={styles.container}>
@@ -65,7 +57,7 @@ export default function JournalList({
             entryId={journal.entryId}
             title={journal.title}
             content={journal.content}
-            date={formatDate(journal.createdAt || new Date().toISOString())}
+            date={journal.createdAt || journal?.updatedAt}
             tags={journal.tags || []}
             onEdit={() => onEdit(journal)}
             onDelete={() => onDelete(journal)}
