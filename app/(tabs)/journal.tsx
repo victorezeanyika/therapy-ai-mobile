@@ -31,9 +31,7 @@ const JournalScreen = () => {
       paddingTop: 20,
     },
     inner: {
-      flex: 1,
       padding: 30,
-      marginBottom: 100,
     },
     keyboardAvoidingView: {
       flex: 1,
@@ -141,11 +139,11 @@ const JournalScreen = () => {
   return (
     <ThemedView style={styles.container}>
       <TopHeader title="Journal" />
-      <ScrollView>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.keyboardAvoidingView}
-        >
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardAvoidingView}
+      >
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View style={styles.inner}>
             <SearchBar value={search} onChangeText={setSearch} />
 
@@ -195,8 +193,8 @@ const JournalScreen = () => {
               isEditing={!!editingEntry}
             />
           </View>
-        </KeyboardAvoidingView>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </ThemedView>
   );
 };
