@@ -5,12 +5,12 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "com.serentis.therapyai",
+    "scheme": "com.kidscantech.therapyai",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.serentis.TherapyAi",
+      "bundleIdentifier": "com.kidscantech.TherapyAi",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -20,7 +20,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.serentis.TherapyAi"
+      "package": "com.kidscantech.TherapyAi"
     },
     "web": {
       "bundler": "metro",
@@ -45,12 +45,11 @@
       "typedRoutes": true
     },
     "extra": {
-      "router": {
-        "origin": false
-      },
+      "router": {},
       "eas": {
-        "projectId": "935734ed-0f23-48d6-8ee4-5c62115ddfec"
+        "projectId": "1b66c696-80c4-4f3e-abbb-a4d11d7dbf3c"
       }
-    }
+    },
+    "owner": "kidscantech"
   }
 }
